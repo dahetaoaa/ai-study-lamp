@@ -1,0 +1,133 @@
+{
+  "paper_id": "fixture_math_xmyz",
+  "title": "后端验收模板 · 数学前三题",
+  "subject": "math",
+  "grade": "9",
+  "render_dpi": 200,
+  "source_pdf": "math_xmyz_2025_oct",
+  "pages": [
+    {
+      "page_no": 1,
+      "image_file": "../../../data/templates/math_xmyz_2025_oct/page_01.png",
+      "features_file": "page_01_akaze.npz",
+      "width_px": 1654,
+      "height_px": 2339,
+      "questions": [
+        {
+          "id": "fixture_math_q1",
+          "number": "1",
+          "type": "choice",
+          "stem": "下列方程是一元二次方程的是（ ）",
+          "options": [
+            "A. 3x+1=0",
+            "B. x²-3=0",
+            "C. y+x²=4",
+            "D. 1/x+x²=2"
+          ],
+          "reference_answer": "B",
+          "answer_display": "B. x²-3=0",
+          "tag": "一元二次方程定义",
+          "analysis": "只含一个未知数，未知数的最高次数为2，并且是整式方程，所以选B。",
+          "bbox": [
+            210,
+            352,
+            1190,
+            128
+          ],
+          "mark_anchor": [
+            716,
+            379
+          ],
+          "answer_areas": [
+            {
+              "id": "a1",
+              "bbox": [
+                626,
+                357,
+                52,
+                45
+              ],
+              "hint": "choice_letter"
+            }
+          ]
+        },
+        {
+          "id": "fixture_math_q2",
+          "number": "2",
+          "type": "choice",
+          "stem": "方程x²-1=0的解是（ ）",
+          "options": [
+            "A. x₁=1，x₂=-1",
+            "B. x=0",
+            "C. x₁=x₂=1",
+            "D. x₁=x₂=-1"
+          ],
+          "reference_answer": "A",
+          "answer_display": "A. x₁=1，x₂=-1",
+          "tag": "平方根",
+          "analysis": "x²=1的两个实数根是1和-1，不要漏掉负根，所以选A。",
+          "bbox": [
+            210,
+            496,
+            1190,
+            190
+          ],
+          "mark_anchor": [
+            585,
+            516
+          ],
+          "answer_areas": [
+            {
+              "id": "a1",
+              "bbox": [
+                518,
+                495,
+                34,
+                44
+              ],
+              "hint": "choice_letter"
+            }
+          ]
+        },
+        {
+          "id": "fixture_math_q3",
+          "number": "3",
+          "type": "choice",
+          "stem": "抛物线y=(x+1)²+2的顶点坐标为（ ）",
+          "options": [
+            "A. (-1,2)",
+            "B. (1,2)",
+            "C. (1,-2)",
+            "D. (2,1)"
+          ],
+          "reference_answer": "A",
+          "answer_display": "A. (-1,2)",
+          "tag": "二次函数顶点式",
+          "analysis": "顶点式y=(x-h)²+k的顶点是(h,k)。这里h=-1，k=2，所以选A。",
+          "bbox": [
+            210,
+            720,
+            1190,
+            118
+          ],
+          "mark_anchor": [
+            745,
+            741
+          ],
+          "answer_areas": [
+            {
+              "id": "a1",
+              "bbox": [
+                681,
+                721,
+                29,
+                44
+              ],
+              "hint": "choice_letter"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

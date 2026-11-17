@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI学伴 学习看板</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/styles.css">
+<script defer src="vendor/katex/katex.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<div class="app" id="app" data-pane="cam">
+  <!-- 窄屏头部 -->
+  <header class="mhead">
+    <span class="app-name">AI学伴</span>
+    <span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span>
+    <span class="mright"><span class="tc num" data-clock></span></span>
+  </header>
+
+  <!-- 左栏：识别出的题 -->
+  <aside class="side" aria-label="识别出来的题">
+    <div class="side-top">
+      <span class="app-name">AI学伴</span>
+      <span class="sp"></span>
+    </div>
+    <div class="kid"><span class="kav">台</span><span>学习台灯</span><span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span></div>
+    <nav class="nav" aria-label="视图">
+      <button data-view="hw" aria-current="page"><svg viewBox="0 0 20 20"><path class="ln" d="M5 3.5h7l3 3v10H5z M12 3.5v3h3 M7.5 10h5 M7.5 13h3.5"/></svg>今晚作业<span class="cnt" id="cntHw"></span></button>
+      <button data-view="mistakes"><svg viewBox="0 0 20 20"><path class="ln" d="M4 4.5h4.5a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 0-1.5-1.5H4zM16 4.5h-4.5A1.5 1.5 0 0 0 10 6v10a1.5 1.5 0 0 1 1.5-1.5H16z"/></svg>错题本<span class="cnt" id="cntMk"></span></button>
+      <button data-view="report"><svg viewBox="0 0 20 20"><path class="ln" d="M4 16V4 M4 16h12 M7.5 13v-3 M10.5 13V7 M13.5 13V9"/></svg>报告</button>
+    </nav>
+    <div class="side-body" id="sideBody"></div>
+    <div class="side-foot">
+      <span>今晚已学习 <b id="studyMin">0</b> 分钟</span>
+      <span class="proto" id="footNote"></span>
+    </div>
+  </aside>
+
+  <!-- 中栏：书桌画面 -->
+  <section class="main" aria-label="书桌画面">
+    <div class="bar">
+      <span class="live-dot" id="liveDot" aria-hidden="true"></span>
+      <span class="ttl" id="camTitle">书桌画面 <span>· LIVE</span></span>
+      <span class="rt">
+        <span class="stab" id="stab" hidden><span class="ring"></span><span id="stabT"></span></span>
+        <button class="mini" id="btnView" type="button" hidden></button>
+        <button class="mini" id="btnGrade" type="button" hidden>批改本页</button>
+        <button class="mini" id="btnCapture" type="button" title="立即抓拍并批改">抓拍</button>
+        <span class="tc num hide-md hide-sm" data-clock></span>
+      </span>
+    </div>
+    <div class="capture-tools" id="captureTools">
+      <button class="mini" id="btnAutoCapture" type="button" aria-pressed="true">自动识别：开</button>
+      <span id="autoCaptureState" role="status">等待检测状态…</span>
+      <span class="sp"></span>
+      <button class="mini" id="btnRecord" type="button" hidden>录制样本</button>
+      <button class="mini" id="btnRecordMark" type="button" hidden>标记已放稳</button>
+      <span id="recordState" role="status"></span>
+    </div>
+    <details class="recordings-panel" id="recordingsPanel" hidden>
+      <summary>临时采集 · 已录样本</summary>
+      <p>只录摄像头画面，不录音；每段最长60秒。建议从空桌开始，放下并保持静止。</p>
+      <label>场景备注 <input id="recordLabel" maxlength="100" placeholder="例如：缓慢放下、翻页、阴影"></label>
+      <button class="mini" id="btnRefreshRecordings" type="button">刷新列表</button>
+      <div id="recordingList"></div>
+    </details>
+    <div class="stage">
+      <div class="cam" id="cam" role="img" aria-label="台灯俯拍书桌画面">
+        <img class="live" id="live" alt="" decoding="async">
+        <div class="sheet" id="sheet" hidden>
+          <img id="still" alt="定格抓拍" decoding="async">
+          <svg class="ovl" id="ovl" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="vig"></div>
+        <div class="cam-badge" id="camBadge" hidden><span class="ring"></span><span id="camBadgeT"></span></div>
+        <div class="cam-msg" id="camMsg" hidden></div>
+        <div class="cap" id="cap" hidden><span class="who" id="capWho">小宇</span><span class="t" id="capT"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 右栏：AI 解析 -->
+  <aside class="panel" aria-label="AI解析">
+    <div class="p-head">
+      <button class="icon-btn" id="back" aria-label="返回台灯动态" disabled><svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg></button>
+      <span class="av" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="ln" cx="8" cy="8" r="3.6" style="stroke-width:1.6"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/></svg></span>
+      <span class="p-title" id="pTitle">台灯动态</span>
+      <span class="p-meta" id="pMeta">台灯 · 实时</span>
+    </div>
+    <div class="p-body" id="pBody"></div>
+    <div class="composer-wrap">
+      <div class="composer" id="composer">
+        <div class="c-text"><textarea class="c-in" id="ask" rows="1" placeholder="问问今晚整体的学习情况…" aria-label="向AI学伴提问" enterkeyhint="send"></textarea><div class="c-voice" id="cVoice" hidden></div></div>
+        <div class="c-row">
+          <span class="seg" role="group" aria-label="语音模式" id="vmode">
+            <button type="button" data-mode="vad" aria-pressed="false" title="免提：自动检测说话，可随时打断">免提</button>
+            <button type="button" data-mode="ptt" aria-pressed="false" title="按住麦克风说话">按住说</button>
+            <button type="button" data-mode="off" aria-pressed="false" title="关闭语音输入">关</button>
+          </span>
+          <span class="sp"></span>
+          <button class="icon-btn" type="button" id="mic" aria-label="麦克风"><svg viewBox="0 0 20 20"><rect class="ln" x="7.5" y="3" width="5" height="9" rx="2.5"/><path class="ln" d="M4.8 9.5a5.2 5.2 0 0 0 10.4 0M10 14.8V17"/></svg></button>
+          <button class="c-send" type="button" id="send" aria-label="发送"></button>
+        </div>
+      </div>
+      <p class="c-hint" id="micHint" hidden></p>
+    </div>
+  </aside>
+  <div class="rsz" id="rzL" role="separator" aria-orientation="vertical" aria-label="调整左栏宽度，双击恢复默认" tabindex="0"></div>
+  <div class="rsz" id="rzR" role="separator" aria-orientation="vertical" aria-label="调整右栏宽度，双击恢复默认" tabindex="0"></div>
+
+  <nav class="tabbar" role="tablist" aria-label="切换">
+    <button role="tab" data-pane="list" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M7 5.5h9M7 10h9M7 14.5h9M4 5.5h.01M4 10h.01M4 14.5h.01" style="stroke-width:1.7"/></svg>题目</button>
+    <button role="tab" data-pane="cam" aria-selected="true"><svg viewBox="0 0 20 20"><rect class="ln" x="3" y="5" width="14" height="10.5" rx="2.5"/><circle class="ln" cx="10" cy="10.2" r="2.6"/></svg>画面</button>
+    <button role="tab" data-pane="panel" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M4 5h12M4 9h12M4 13h7.5"/></svg>解析</button>
+  </nav>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><i></i><span id="toastT"></span></div>
+</body>
+</html>

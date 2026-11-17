@@ -1,0 +1,24 @@
+[project]
+name = "study-lamp-backend"
+version = "0.1.0"
+description = "AI学习台灯：视觉批改与语音会话服务"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn[standard]>=0.32,<1", "httpx>=0.28,<1",
+  "pydantic-settings>=2.7,<3", "python-multipart>=0.0.20", "numpy>=1.26,<3",
+  "opencv-python-headless>=4.10,<5", "pillow>=11,<13"
+]
+[project.optional-dependencies]
+voice = ["silero-vad>=5", "onnxruntime>=1.20", "funasr>=1.2", "torch>=2.5", "torchaudio>=2.5", "soundfile>=0.13"]
+kokoro = ["kokoro>=0.9", "soundfile>=0.13"]
+qwen-tts = ["faster-qwen3-tts>=0.5.4", "transformers>=5.15.1,<5.16"]  # transformers 5.16+ 与 qwen-tts-hf 的 Tokenizer 不兼容
+[dependency-groups]
+dev = ["pytest>=8", "pytest-asyncio>=0.25", "websockets>=14", "ruff>=0.11"]
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = ["cloud: 真实云端API验收，需 RUN_CLOUD_TESTS=1"]
+[tool.ruff]
+line-length = 110

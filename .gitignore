@@ -1,0 +1,33 @@
+# Local secrets and agent/session state
+.env
+.env.*
+!.env.example
+.claude/
+.mcp.json
+
+# Python environments, caches, model weights
+.venv*/
+**/.venv*/
+models/
+__pycache__/
+/backend/tests/fixtures/*_akaze.npz
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Runtime artifacts and camera/user recordings
+/deploy/logs/
+/deploy/certs/
+/data/*
+!/data/templates/
+!/data/mock_captures/
+/data/templates/*/ocr/
+/data/templates/*/*.npz
+/data/templates/*/draft.json
+/data/templates/*/crosscheck.json
+
+# Presentation/source-archive assets are not part of the app baseline
+/PPT/
+/演示脚本/
+/大屏学习看板/
+.DS_Store

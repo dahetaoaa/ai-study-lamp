@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# 机器上没有 gcc 且无 root 权限时，用 pip 包 ziglang 提供的 zig cc 给 Triton 编译内核启动器。
+# 由 deploy/start_4090.sh 通过 CC 环境变量启用（需先在 .venv-vllm 里装 ziglang）。
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+exec "$ROOT/.venv-vllm/bin/python" -m ziglang cc "$@"
