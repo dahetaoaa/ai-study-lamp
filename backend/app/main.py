@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 from app.config import ROOT, Settings
 from app.engine import Engine
 from app.grading.client import ModelClients
+from app.knowledge.service import get_overview_payload, get_subject_graph
 from app.state import Session
 from app.vision.camera import Camera
 from app.vision.matcher import TemplateLibrary
@@ -121,7 +122,8 @@ def create_app(settings=None):
             "models": models,
             "templates_count": len(state.library.papers),
             "details": {
-                "ocr_vllm": "v1仅供离线建模板，不阻断在线批改",
+                "ocr_vllm": "PaddleOCR-VL-1.5 (Spotting:) 线上常驻整页无模板OCR与题框提取" if models.get("ocr_vllm") else "未开启独立OCR服务时自动回退多模态VLM",
+                "freeform_ocr_enabled": settings.freeform_ocr_enabled,
                 "voice": "TTS可由TTS_WARMUP启动预热；失败标红但保留文字服务。远程STT不在后端加载。",
                 "tts_warmed": state.voice.tts.warmed,
                 "tts_warmup_ms": state.voice.tts.warmup_ms,
@@ -157,6 +159,16 @@ def create_app(settings=None):
     async def session_state():
         app.state.session.data["recording"] = app.state.recorder.status()
         return app.state.session.snapshot()
+
+    @app.get("/api/knowledge/overview")
+    async def knowledge_overview():
+        return get_overview_payload(app.state.session.data)
+
+    @app.get("/api/knowledge/graph/{subject}")
+    async def knowledge_graph(subject: str):
+        if subject not in ("math", "en"):
+            raise HTTPException(404, "不支持的学科图谱")
+        return get_subject_graph(subject, app.state.session.data)
 
     async def recording_call(fn, *args):
         try:

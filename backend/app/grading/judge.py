@@ -122,11 +122,12 @@ JUDGE_PROTOCOL = (
 JUDGE_SYSTEM = JUDGE_GUIDANCE + "\n\n输出协议：\n" + JUDGE_PROTOCOL
 
 
-def judge_messages(question, raw, blank, *, low_confidence=False):
+def judge_messages(question, raw, blank, *, low_confidence=False, question_jpeg=None):
     # 白名单：模板只提供题目本身，参考答案、考点与预制解析都不能进入求解请求。
     payload = {
         "题型": question["type"],
         "题干": question["stem"],
+        "含配图": True if question.get("has_diagram") else None,
         "阅读材料": question.get("passage", "") or None,
         "选项": question.get("options"),
         "学生作答": raw,

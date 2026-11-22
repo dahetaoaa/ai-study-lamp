@@ -8,17 +8,32 @@ from app.vision.matcher import project, quad
 from app.vision.stability import DetectionConfig, Stability
 
 
+def _center_edge_ratio(image: np.ndarray) -> float:
+    """计算候选帧中心纸面区域的 Canny 边缘像素占比，用于剔除无印刷文字的空白过渡帧。"""
+    if image is None or not image.size:
+        return 0.0
+    h, w = image.shape[:2]
+    scale = min(1.0, 320.0 / max(h, w))
+    small = cv2.resize(image, (max(8, round(w * scale)), max(8, round(h * scale))), interpolation=cv2.INTER_AREA)
+    gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY) if small.ndim == 3 else small
+    sh, sw = gray.shape
+    center = gray[sh // 8 : max(sh // 8 + 1, sh * 7 // 8), sw // 8 : max(sw // 8 + 1, sw * 7 // 8)]
+    edges = cv2.Canny(center, 60, 160)
+    return float(np.count_nonzero(edges)) / max(1, edges.size)
+
+
 class AutoDetector:
-    def __init__(self, library, config=None):
+    def __init__(self, library, config=None, *, allow_freeform=False):
         self.library = library
         self.stability = Stability(config or DetectionConfig())
+        self.allow_freeform = allow_freeform
 
     def step(self, frame, now):
         state, candidate = self.stability.update(frame, now)
         if candidate is None:
             return state, None, None
         started = perf_counter()
-        match = self.library.match(candidate)
+        match = self.library.match(candidate) if self.library else None
         state["match_ms"] = round((perf_counter() - started) * 1000, 2)
         reason = "unmatched"
         if match:
@@ -33,6 +48,19 @@ class AutoDetector:
                 state["reason"] = "ready"
                 return state, candidate, match
             reason = "incomplete_page"
+        elif (
+            self.allow_freeform
+            and state.get("paper_ratio", 0) >= 0.22
+            and state.get("sharpness", 0) >= max(120.0, self.stability.config.min_sharpness)
+        ):
+            edge_ratio = state.get("edge_ratio")
+            if edge_ratio is None:
+                edge_ratio = _center_edge_ratio(candidate)
+                state["edge_ratio"] = round(edge_ratio, 4)
+            if edge_ratio >= 0.006:
+                # 未命中预设模板但纸面完整、清晰且具备真实印刷文字/线条边缘密度：放行进入无模板整页 OCR 管线。
+                state.update(reason="ready", mode="freeform")
+                return state, candidate, None
         self.stability.reject(reason, now)
         state.update(stability="rejected", reason=reason)
         return state, None, None

@@ -22,7 +22,11 @@ class Settings(BaseSettings):
     hwr_model: str = "Qwen3.5-2B"
     hwr_api_key: SecretStr = SecretStr("")
     ocr_base_url: str = "http://127.0.0.1:8002/v1"
-    ocr_model: str = "PaddleOCR-VL-0.9B"
+    ocr_model: str = "PaddleOCR-VL-1.5"
+    freeform_ocr_enabled: bool = True
+    freeform_ocr_provider: str = "auto"  # auto | ocr_vllm | local_vlm | cloud_vl
+    freeform_vlm_model: str = "qwen3-vl-plus"
+    freeform_prefer_cloud_vl: bool = False
     cloud_llm_base_url: str = "https://api.dahetao.org/v1"
     cloud_llm_model: str = "qwen3.8-27b"
     cloud_llm_api_key: SecretStr = SecretStr("")

@@ -10,12 +10,14 @@ import cv2
 import httpx
 import numpy as np
 
-from app.grading.hwr_client import HWRClient
+from app.grading.hwr_client import HWRClient, merge_freeform_choice_result
 from app.grading.judge import FirstLineParser, judge_messages
 from app.telemetry import elapsed, log, timing
+from app.vision.annotations import annotation_geometry
 from app.vision.autocapture import AutoDetector, answer_fingerprint, page_key, same_answers
 from app.vision.cropper import crop_answers
 from app.vision.matcher import project, quad
+from app.vision.page_ocr import PageOCRClient, freeform_fingerprint
 from app.vision.stability import DetectionConfig
 
 
@@ -24,9 +26,14 @@ class Engine:
         self.settings, self.session, self.camera = settings, session, camera
         self.library, self.clients = library, clients
         self.hwr = HWRClient(clients)
+        self.page_ocr = PageOCRClient(clients)
         self.captures = OrderedDict()
         self.tasks: dict[str, asyncio.Task] = {}
-        self.detector = AutoDetector(library, DetectionConfig.from_settings(settings))
+        self.detector = AutoDetector(
+            library,
+            DetectionConfig.from_settings(settings),
+            allow_freeform=getattr(settings, "freeform_ocr_enabled", True),
+        )
         self.stability = self.detector.stability
         self.detector_lock = asyncio.Lock()
         self.recorder = None
@@ -122,14 +129,19 @@ class Engine:
                 raise ValueError("没有可抓拍图像")
             match_start = perf_counter()
             if not match_checked:
-                match = await asyncio.to_thread(self.library.match, image)
+                match = await asyncio.to_thread(self.library.match, image) if self.library else None
             match_ms = self.detection_state.get("match_ms", 0) if match_checked else elapsed(match_start)
-            fingerprint = await asyncio.to_thread(answer_fingerprint, image, match) if match else None
+            if match:
+                fingerprint = await asyncio.to_thread(answer_fingerprint, image, match)
+            elif getattr(self.settings, "freeform_ocr_enabled", True):
+                fingerprint = await asyncio.to_thread(freeform_fingerprint, image)
+            else:
+                fingerprint = None
             async with self.detector_lock:
                 self.stability.lock(image)
             if match:
                 for old_id, old in reversed(self.captures.items()):
-                    if not old.get("match") or page_key(old["match"]) != page_key(match):
+                    if not old.get("match") or old.get("freeform") or page_key(old["match"]) != page_key(match):
                         continue
                     if not await asyncio.to_thread(same_answers, fingerprint, old.get("fingerprint", [])):
                         continue
@@ -143,6 +155,18 @@ class Engine:
                     if grade and old_id not in self.tasks and (not old["grade_started"] or result.get("error_uids")):
                         old["grade_started"] = False
                         self.spawn(old_id, self.grade(old_id))
+                    h, w = old["image"].shape[:2]
+                    return {"capture_id": old_id, "image_url": f"/api/captures/{old_id}.jpg",
+                            "width": w, "height": h, "reused": True}
+            elif fingerprint:
+                for old_id, old in reversed(self.captures.items()):
+                    if not old.get("freeform") or not old.get("match"):
+                        continue
+                    if not await asyncio.to_thread(same_answers, fingerprint, old.get("fingerprint", [])):
+                        continue
+                    self.captures.move_to_end(old_id)
+                    self.detection_state = {**self.detection_state, "stability": "locked", "reason": "duplicate"}
+                    await self.session.emit({"type": "capture.reused", "capture_id": old_id, "source": source})
                     h, w = old["image"].shape[:2]
                     return {"capture_id": old_id, "image_url": f"/api/captures/{old_id}.jpg",
                             "width": w, "height": h, "reused": True}
@@ -197,17 +221,27 @@ class Engine:
         try:
             match = cap["match"]
             timing("match", cap["timings_ms"].get("match", 0), capture_id=capture_id)
+            if match is None and getattr(self.settings, "freeform_ocr_enabled", True):
+                await self.session.timeline("detect", "未命中入库模板，正在执行整页 OCR 与图题切分…")
+                free = await self.page_ocr.extract_page(cap["image"])
+                if free is not None:
+                    match = free
+                    cap["freeform"] = True
+                    cap["pre_crops"] = free.crops
+                    cap["timings_ms"]["page_ocr_source"] = free.ocr_source
             if match is None:
                 await self.session.emit(
                     {"type": "page.unmatched", "capture_id": capture_id, "reason": "no_page"}
                 )
-                await self.session.timeline("alert", "未匹配到已入库试卷，请调整纸张或先建立模板")
+                await self.session.timeline("alert", "未能从画面识别到有效试卷题目，请调整纸张位置或光线后重拍")
                 return
             cap["match"] = match
+            mode_name = "freeform" if cap.get("freeform") else "template"
             page, paper = match.template.page, match.template.paper
             height, width = cap["image"].shape[:2]
             items = []
             for q in page["questions"]:
+                geometry = annotation_geometry(q, match.homography, page["width_px"], page["height_px"])
                 q_quad = project(quad(q["bbox"]), match.homography)
                 pts = np.array(q_quad)
                 low, high = pts.min(axis=0), pts.max(axis=0)
@@ -236,9 +270,7 @@ class Engine:
                             float(high[0] - low[0]),
                             float(high[1] - low[1]),
                         ],
-                        "mark_pos": project(
-                            [q.get("mark_anchor", [q["bbox"][0], q["bbox"][1]])], match.homography
-                        )[0],
+                        **geometry,
                         "answer_quads": [
                             project(quad(a["bbox"]), match.homography) for a in q.get("answer_areas", [])
                         ],
@@ -249,7 +281,7 @@ class Engine:
                 {
                     "type": "page.matched",
                     "capture_id": capture_id,
-                    "mode": "template",
+                    "mode": mode_name,
                     "paper_id": paper["paper_id"],
                     "paper_title": paper["title"],
                     "subject": paper["subject"],
@@ -290,7 +322,10 @@ class Engine:
         cap["verdict_count"] = 0
         match = cap["match"]
         start = perf_counter()
-        crops = await asyncio.to_thread(crop_answers, cap["image"], match)
+        if cap.get("freeform") and cap.get("pre_crops"):
+            crops = cap["pre_crops"]
+        else:
+            crops = await asyncio.to_thread(crop_answers, cap["image"], match)
         cap["timings_ms"]["crop"] = elapsed(start)
         timing("crop", elapsed(start), capture_id=capture_id)
         questions = [q for q in match.template.page["questions"] if q["type"] != "listening"]
@@ -338,6 +373,13 @@ class Engine:
     async def grade_question(self, cid, question, crop):
         cap = self.captures[cid]
         item = cap["items"][question["id"]]
+        if cap.get("match") and "primary_area_index" in crop:
+            match = cap["match"]
+            page = match.template.page
+            item.update(annotation_geometry(
+                question, match.homography, page["width_px"], page["height_px"],
+                crop.get("primary_area_index", 0), crop.get("ink_bbox"),
+            ))
         question = {**question, "passage": item.get("passage", "")}
         uid = item["question_uid"]
         context = {"capture_id": cid, "question_uid": uid}
@@ -352,7 +394,9 @@ class Engine:
                 return
             if low:
                 data = {**data, "status": "uncertain", "error_note": "手写识别不确定，请确认作答内容。"}
-            elif blank or (question["type"] == "writing" and data["status"] != "uncertain"):
+            elif blank:
+                data = {**data, "status": "blank", "student_display": ""}
+            elif question["type"] == "writing" and data["status"] != "uncertain":
                 data = {**data, "status": "blank"}
             verdict_data, verdict_status = data, data["status"]
             elapsed_ms = elapsed(cap["started"])
@@ -365,7 +409,9 @@ class Engine:
                 timing("all_verdicts", elapsed_ms, capture_id=cid)
             timing("verdict", elapsed_ms, **context)
             answer_quads = item["answer_quads"]
-            error_quad = answer_quads[0] if answer_quads and verdict_status == "wrong" else None
+            index = item.get("primary_area_index", 0)
+            area_quad = answer_quads[min(index, len(answer_quads) - 1)] if answer_quads else None
+            error_quad = (item.get("ink_quad") or area_quad) if verdict_status == "wrong" else None
             # 展示模型实时求出的答案，不再将模板答案作为正确答案发送给前端。
             reference = data.get("model_answer") or ""
             await self.session.emit(
@@ -380,6 +426,8 @@ class Engine:
                     "reference_display": reference,
                     "tag": question.get("tag", ""),
                     "mark_pos": item["mark_pos"],
+                    "mark_quad": item.get("mark_quad"),
+                    "primary_area_index": item.get("primary_area_index", 0),
                     "error_quad": error_quad,
                     "error_note": data.get("error_note"),
                     "error_step_desc": data.get("error_step_desc"),
@@ -389,7 +437,29 @@ class Engine:
 
         try:
             start = perf_counter()
-            if not blank:
+            if cap.get("freeform"):
+                # 无模板模式下：经 ink gate 确认空白时直接 0ms 跳过 HWR；非空白则跑 HWR 并在选择题下融合 Spotting 预提取结果
+                if crop.get("is_blank"):
+                    raw, low, blank = "", False, True
+                else:
+                    pre_hw = (crop.get("pre_ocr_handwriting") or "").strip()
+                    if crop.get("blocks"):
+                        raw, low = await self.hwr.recognize(crop["blocks"], question["type"], freeform=True)
+                        if question["type"] == "choice":
+                            raw, low = merge_freeform_choice_result(
+                                raw,
+                                low,
+                                pre_hw,
+                                ink_pixels=crop.get("clean_ink_pixels", 0),
+                                pre_ocr_confident=crop.get("pre_ocr_confident", False),
+                            )
+                        elif not raw.strip() and pre_hw:
+                            raw, low = pre_hw, False
+                        blank = not raw.strip() and not low
+                    else:
+                        raw, low = pre_hw, False
+                        blank = not raw
+            elif not blank:
                 raw, low = await self.hwr.recognize(crop["blocks"], question["type"])
                 blank = not raw.strip() and not low
             hwr_ms = elapsed(start)
@@ -408,7 +478,13 @@ class Engine:
                 }
             )
             parser = FirstLineParser()
-            messages = judge_messages(question, raw, blank, low_confidence=low)
+            messages = judge_messages(
+                question,
+                raw,
+                blank,
+                low_confidence=low,
+                question_jpeg=crop.get("question_jpeg") if question.get("has_diagram") else None,
+            )
             async for chunk in self.clients.stream(messages, **context):
                 data, text = parser.feed(chunk)
                 if data:

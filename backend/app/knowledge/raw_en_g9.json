@@ -1,0 +1,744 @@
+{
+  "books": [
+    {
+      "book_id": "en_9",
+      "title": "九年级全一册",
+      "grade": "九年级",
+      "term": "全一册",
+      "units": [
+        {
+          "unit_id": "en_9_u1",
+          "code": "Unit 1",
+          "title": "How can we become good learners?",
+          "cn_title": "我们怎样才能成为优秀的学习者？",
+          "topic": "学习方法与语言习得策略",
+          "grammar_focus": "by + V-ing 表达方式方法与动名词作介词宾语",
+          "grammar_points": [
+            "how 引导特殊疑问句询问学习方式，用“by + V-ing”结构回答“通过做某事”，如 by reading aloud / by making word cards",
+            "动名词（V-ing）作主语或宾语：如 Reading aloud helps a lot. / practice speaking English（常接 doing 的动词有 practice, finish, enjoy, mind, keep）",
+            "“the + 比较级 ..., the + 比较级 ...”表示“越……，就越……”：如 The more you read, the faster you'll be.",
+            "“so + adj./adv. + that ...”与“too + adj./adv. + to do”结果状语转换，以及 find it + adj. + to do sth.（it 作形式宾语）"
+          ],
+          "key_vocab": [
+            "textbook n. 教科书；课本",
+            "conversation n. 交谈；谈话",
+            "aloud adv. 大声地；出声地",
+            "pronunciation n. 发音；读音",
+            "patient adj. 有耐心的 n. 病人",
+            "expression n. 表情；表示；表达方式",
+            "discover v. 发现；发觉",
+            "memorize v. 记忆；记住",
+            "increase v. 增加；增长",
+            "connect v. （使）连接；与……有联系",
+            "knowledge n. 知识；学问",
+            "wisely adv. 明智地；聪明地"
+          ],
+          "key_patterns": [
+            "How do you study for a test? — I study by working with a group.",
+            "It's too hard to understand spoken English.",
+            "The more you read, the faster you'll be."
+          ],
+          "vocab_count": 33,
+          "prereqs": [
+            "en_8b_u2"
+          ]
+        },
+        {
+          "unit_id": "en_9_u2",
+          "code": "Unit 2",
+          "title": "I think that mooncakes are delicious!",
+          "cn_title": "我认为月饼很美味！",
+          "topic": "中外传统节日与文化习俗",
+          "grammar_focus": "that / if / whether 引导的宾语从句与 what / how 感叹句",
+          "grammar_points": [
+            "宾语从句三要素之引导词：陈述句用 that（口语中常省略），一般疑问句用 if 或 whether（与 or not 连用或作介词宾语时只用 whether）",
+            "宾语从句语序与时态呼应：从句一律用陈述句语序（主语 + 谓语）；主句为过去时，从句相应变为过去某时态（客观真理仍用一般现在时）",
+            "What 引导感叹句：What + a/an + adj. + 可数名词单数 (+ 主语 + 谓语)! / What + adj. + 可数名词复数或不可数名词 (+ 主语 + 谓语)!",
+            "How 引导感叹句：How + adj./adv. + 主语 + 谓语! 辨析 What fun the Water Festival is!（fun 为不可数名词）"
+          ],
+          "key_vocab": [
+            "mooncake n. 月饼",
+            "stranger n. 陌生人",
+            "relative n. 亲属；亲戚",
+            "tradition n. 传统",
+            "admire v. 欣赏；仰慕",
+            "steal v. 偷；窃取",
+            "lay v. 放置；安放；产（卵）；下（蛋）",
+            "treat n. 款待；招待 v. 招待；请（客）",
+            "punish v. 处罚；惩罚",
+            "warn v. 警告；告诫",
+            "warmth n. 温暖；暖和",
+            "spread v. 传播；展开 n. 蔓延；传播"
+          ],
+          "key_patterns": [
+            "I think that mooncakes are delicious!",
+            "Bill wonders whether they'll have zongzi again next year.",
+            "What fun the Water Festival is! / How pretty the dragon boats were!"
+          ],
+          "vocab_count": 32,
+          "prereqs": [
+            "en_9_u1"
+          ]
+        },
+        {
+          "unit_id": "en_9_u3",
+          "code": "Unit 3",
+          "title": "Could you please tell me where the restrooms are?",
+          "cn_title": "请问你能告诉我洗手间在哪里吗？",
+          "topic": "礼貌问路、请求与公共场所指引",
+          "grammar_focus": "wh- 疑问词引导的宾语从句与“疑问词 + 不定式”",
+          "grammar_points": [
+            "特殊疑问词（what / where / when / how / who / why 等）引导宾语从句，从句必须保持陈述语序（连接词 + 主语 + 谓语）",
+            "Could you please tell me ...? 表委婉请求，Could 并非过去式，回答用 Yes, sure. / Sorry, I'm not sure... 宾语从句仍按实际时态",
+            "疑问词 + 动词不定式（where to go / how to get there）作宾语，可与对应宾语从句（where I can go）互换",
+            "suggest 用法辨析：suggest doing sth. / suggest (that) sb. (should) do sth.（不可用 suggest sb. to do sth.）"
+          ],
+          "key_vocab": [
+            "restroom n. （美）洗手间；公共厕所",
+            "bookstore n. 书店",
+            "postcard n. 明信片",
+            "pardon v. 原谅 interj. 请再说一遍",
+            "suggest v. 建议；提议",
+            "central adj. 中心的；中央的",
+            "nearby adj. 附近的；邻近的 adv. 在附近",
+            "convenient adj. 便利的；方便的",
+            "corner n. 拐角；角落",
+            "politely adv. 礼貌地；客气地",
+            "request n. & v. 要求；请求",
+            "direction n. 方向；方位"
+          ],
+          "key_patterns": [
+            "Excuse me, do you know where I can buy some medicine?",
+            "Could you please tell me how to get to the post office?",
+            "Pardon me, could you please tell me when the band starts playing this evening?"
+          ],
+          "vocab_count": 33,
+          "prereqs": [
+            "en_9_u2",
+            "en_7b_u8"
+          ]
+        },
+        {
+          "unit_id": "en_9_u4",
+          "code": "Unit 4",
+          "title": "I used to be afraid of the dark.",
+          "cn_title": "我过去常常怕黑。",
+          "topic": "人物外貌、性格与成长变化",
+          "grammar_focus": "used to 结构及其肯定、否定与疑问句式",
+          "grammar_points": [
+            "used to + 动词原形表示“过去常常做某事（现在不再这样）”，适用于所有人称",
+            "used to 的否定与疑问式：didn't use to do / usedn't to do；Did ... use to do ...?（注意去掉 d）",
+            "易混辨析：used to do（过去常做）、be/get used to doing（习惯于做某事）、be used to do（被用来做某事）",
+            "take pride in 与 be proud of（以……为傲）、deal with 与 do with（处理/对付）的同义替换"
+          ],
+          "key_vocab": [
+            "humorous adj. 有幽默感的；滑稽有趣的",
+            "silent adj. 不说话的；沉默的",
+            "helpful adj. 有用的；有帮助的",
+            "background n. 背景",
+            "interview v. 采访；面试 n. 面试；访谈",
+            "dare v. 敢于；胆敢",
+            "private adj. 私人的；私密的",
+            "require v. 需要；要求",
+            "seldom adv. 不常；很少",
+            "influence v. & n. 影响",
+            "absent adj. 缺席；不在",
+            "proud adj. 自豪的；骄傲的"
+          ],
+          "key_patterns": [
+            "I used to be afraid of the dark. / She didn't use to like tests.",
+            "Did he use to wear glasses? — Yes, he did. / No, he didn't.",
+            "It's been three years since we last saw our primary school classmates."
+          ],
+          "vocab_count": 33,
+          "prereqs": [
+            "en_7b_u11",
+            "en_8b_u8"
+          ]
+        },
+        {
+          "unit_id": "en_9_u5",
+          "code": "Unit 5",
+          "title": "What are the shirts made of?",
+          "cn_title": "这些衬衫是由什么制成的？",
+          "topic": "产品制造材料、产地与传统工艺非遗",
+          "grammar_focus": "一般现在时的被动语态（am/is/are + 过去分词）",
+          "grammar_points": [
+            "一般现在时被动语态结构：肯定句 主语 + am/is/are + done (+ by ...)；否定句在 be 后加 not；疑问句把 am/is/are 提至句首",
+            "主动语态变被动语态：原宾语变主语，原谓语变为 am/is/are + 过去分词，原主语变为 by 引导的介词短语（常可省略）",
+            "核心短语辨析：be made of（看出原材料）、be made from（看不出原材料）、be made in（产于某地）、be made by（由某人制造）",
+            "no matter + 疑问词（what/where/how/who）引导让步状语从句，从句用一般现在时表示将来或普遍情况"
+          ],
+          "key_vocab": [
+            "glass n. 玻璃",
+            "cotton n. 棉",
+            "steel n. 钢",
+            "silver n. 银",
+            "chopstick n. 筷子",
+            "coin n. 硬币",
+            "fork n. 餐叉",
+            "blouse n. 女式衬衫",
+            "produce v. 生产",
+            "widely adv. 广泛地",
+            "process v. 加工",
+            "pack v. 包装"
+          ],
+          "key_patterns": [
+            "What are the shirts made of? — They're made of cotton.",
+            "Where is tea produced in China? — It's produced in many different areas.",
+            "How is tea produced? — Tea plants are grown on the sides of mountains."
+          ],
+          "vocab_count": 36,
+          "prereqs": [
+            "en_9_u4"
+          ]
+        },
+        {
+          "unit_id": "en_9_u6",
+          "code": "Unit 6",
+          "title": "When was it invented?",
+          "cn_title": "它是什么时候被发明的？",
+          "topic": "人类重大发明创造与历史故事",
+          "grammar_focus": "一般过去时的被动语态（was/were + 过去分词）",
+          "grammar_points": [
+            "一般过去时被动语态结构：主语 + was/were + done (+ by ...)；特殊疑问句：When/Who + was/were + 主语 + done?",
+            "感官动词或使役动词（see/hear/watch/make/let）主动省 to（make sb. do），变为被动语态时必须还原 to（be made to do）",
+            "接双宾语的动词（give/buy/show/bring）变被动：若将物作主语，需补全介词 to 或 for（be bought for sb.）",
+            "无被动语态的常见不及物动词与短语：take place, happen, break out, appear, come out 等（如 Great changes took place.）"
+          ],
+          "key_vocab": [
+            "electricity n. 电；电能",
+            "style n. 样式；款式",
+            "daily adj. 每日的；日常的",
+            "pioneer n. 先锋；先驱",
+            "mention v. 提到；说到",
+            "accidental adj. 意外的；偶然的",
+            "remain v. 保持不变；剩余",
+            "national adj. 国家的；民族的",
+            "doubt n. 疑惑；疑问 v. 怀疑",
+            "translate v. 翻译",
+            "divide v. 分开；分散",
+            "hero n. 英雄；男主角"
+          ],
+          "key_patterns": [
+            "When was the zipper invented? — It was invented in 1893.",
+            "Who was it invented by? — It was invented by Whitcomb Judson.",
+            "What is it used for? — It's used for serving really cold ice-cream."
+          ],
+          "vocab_count": 35,
+          "prereqs": [
+            "en_9_u5",
+            "en_7b_u11"
+          ]
+        },
+        {
+          "unit_id": "en_9_u7",
+          "code": "Unit 7",
+          "title": "Teenagers should be allowed to choose their own clothes.",
+          "cn_title": "青少年应该被允许选择自己的衣服。",
+          "topic": "青少年家庭规则、校园制度与自主权",
+          "grammar_focus": "含情态动词的被动语态（情态动词 + be + 过去分词）",
+          "grammar_points": [
+            "含情态动词的被动语态：主语 + should/can/may/must/could + be + 过去分词；否定式在情态动词后加 not",
+            "否定前移现象：I don't think sixteen-year-olds should be allowed to drive.（think/believe 等主句否定，意义落在从句）",
+            "have/get sth. done 表示“让别人做某事”或“使某事被做”，如 get their ears pierced（打耳洞）",
+            "regret doing sth.（后悔做过某事）与 regret to do sth.（遗憾要做某事）的用法区别"
+          ],
+          "key_vocab": [
+            "license n. 证；证件",
+            "safety n. 安全；安全性",
+            "smoke v. 冒烟；吸烟 n. 烟",
+            "pierce v. 扎；刺破；穿透",
+            "hug n. & v. 拥抱；搂抱",
+            "awful adj. 很坏的；讨厌的",
+            "regret v. & n. 感到遗憾；懊悔",
+            "community n. 社区；社团",
+            "chance n. 机会；可能性",
+            "educate v. 教育；教导",
+            "manage v. 完成（困难的事）；应付（局面）",
+            "choice n. 选择；挑选"
+          ],
+          "key_patterns": [
+            "Teenagers should be allowed to choose their own clothes.",
+            "I don't think sixteen-year-olds should be allowed to drive.",
+            "Parents should not be too strict with teenagers."
+          ],
+          "vocab_count": 30,
+          "prereqs": [
+            "en_9_u5",
+            "en_9_u6"
+          ]
+        },
+        {
+          "unit_id": "en_9_u8",
+          "code": "Unit 8",
+          "title": "It must belong to Carla.",
+          "cn_title": "它一定是卡拉的。",
+          "topic": "日常物品归属推理与未解之谜探索",
+          "grammar_focus": "情态动词表推测（must / might / could / can't）",
+          "grammar_points": [
+            "情态动词表把握程度：must（肯定推测，“一定”，90%以上把握）；could/may/might（可能推测，“也许”）；can't（否定推测，“不可能”，注意不可用 mustn't 表推测）",
+            "推测的三种时间维度：must/might/can't + do（对现在状态的推测）；+ be doing（对正在发生动作的推测）；+ have done（对过去动作的推测）",
+            "belong to sb. 表示“属于某人”，无被动语态，也不能用进行时，后接人称代词宾格或名词（区别于 be sb.'s）",
+            "There must be sb./sth. doing sth. 句型表示“一定有某人/某物正在做某事”"
+          ],
+          "key_vocab": [
+            "whose adj. & pron. 谁的",
+            "attend v. 出席；参加",
+            "valuable adj. 贵重的；很有用的；宝贵的",
+            "noise n. 声音；噪音",
+            "uneasy adj. 担心的；不安的",
+            "sleepy adj. 困倦的；瞌睡的",
+            "express v. 表示；表达",
+            "mystery n. 奥秘；神秘事物",
+            "receive v. 接待；接受；收到",
+            "purpose n. 目的；目标",
+            "prevent v. 阻止；阻挠",
+            "energy n. 力量；精力"
+          ],
+          "key_patterns": [
+            "Whose volleyball is this? — It must be Carla's. She loves volleyball.",
+            "It could/might belong to Mei. / It can't be stolen.",
+            "There must be something visiting the homes in our neighborhood."
+          ],
+          "vocab_count": 34,
+          "prereqs": [
+            "en_9_u7",
+            "en_8b_u3"
+          ]
+        },
+        {
+          "unit_id": "en_9_u9",
+          "code": "Unit 9",
+          "title": "I like music that I can dance to.",
+          "cn_title": "我喜欢能随着跳舞的音乐。",
+          "topic": "音乐电影偏好、审美评价与艺术人物",
+          "grammar_focus": "that / which / who 引导的定语从句",
+          "grammar_points": [
+            "定语从句基本结构：先行词 + 关系代词（that/which/who）+ 从句；关系代词在从句中作主语时不可省略，作宾语时可省略",
+            "先行词为人用 who/that，先行词为物用 which/that；当先行词被最高级、序数词、all/only/very 修饰或既有人又有物时只用 that",
+            "关系代词在定语从句中作主语时，从句谓语动词的数必须与先行词保持一致（如 I like musicians who play...）",
+            "prefer 用法：prefer A to B（喜欢 A 胜过 B）、prefer doing A to doing B、prefer to do A rather than do B"
+          ],
+          "key_vocab": [
+            "prefer v. 更喜欢",
+            "lyrics n. (pl.) 歌词",
+            "electronic adj. 电子的；电子设备的",
+            "suppose v. 推断；料想",
+            "smooth adj. 悦耳的；平滑的",
+            "spare adj. 空闲的；不用的 v. 抽出；留出",
+            "director n. 导演；部门负责人",
+            "intelligent adj. 有才智的；聪明的",
+            "reflect v. 反映；映出",
+            "perform v. 表演；执行",
+            "praise v. & n. 表扬；赞扬",
+            "painful adj. 令人痛苦的；令人疼痛的"
+          ],
+          "key_patterns": [
+            "What kind of music do you like? — I like music that I can dance to.",
+            "She likes musicians who play different kinds of music.",
+            "The piece which was played on the erhu especially moved me."
+          ],
+          "vocab_count": 33,
+          "prereqs": [
+            "en_9_u2",
+            "en_9_u3"
+          ]
+        },
+        {
+          "unit_id": "en_9_u10",
+          "code": "Unit 10",
+          "title": "You're supposed to shake hands.",
+          "cn_title": "你应该握手。",
+          "topic": "世界各国见面礼仪、餐桌礼仪与跨文化交际",
+          "grammar_focus": "be supposed to / be expected to 与 It is + adj. + to do sth.",
+          "grammar_points": [
+            "be supposed to do sth. 表示“按规定、习俗或安排应该做某事”，否定式为 be not supposed to do",
+            "be expected to do sth. 表示“被期待/理应做某事”，语气比 be supposed to 更强调他人期望或责任",
+            "“It is + adj. + (for/of sb.) + to do sth.”：形容词描述事物特征（important/impolite/difficult）用 for；描述人的品质（kind/polite/careless）用 of",
+            "be worth doing sth.（值得做某事，主动形式表被动含义）与 except（除……之外，不含在内）辨析"
+          ],
+          "key_vocab": [
+            "custom n. 风俗；习俗",
+            "greet v. 和……打招呼；迎接",
+            "relaxed adj. 放松的；自在的",
+            "value v. 重视；珍视 n. 价值",
+            "effort n. 努力；尽力",
+            "worth adj. 值得；有……价值（的）",
+            "manner n. 方式；方法；(pl.) 礼貌；礼仪",
+            "basic adj. 基本的；基础的",
+            "exchange n. & v. 交换",
+            "behave v. 表现；举止",
+            "except prep. 除……之外 conj. 除了；只是",
+            "suggestion n. 建议"
+          ],
+          "key_patterns": [
+            "What are you supposed to do when you meet someone for the first time? — You're supposed to shake hands.",
+            "Am I supposed to wear jeans? — No, you're expected to wear a suit and tie.",
+            "Is it impolite to keep others waiting? — Yes, it's very impolite to keep others waiting."
+          ],
+          "vocab_count": 32,
+          "prereqs": [
+            "en_9_u7",
+            "en_8b_u2"
+          ]
+        },
+        {
+          "unit_id": "en_9_u11",
+          "code": "Unit 11",
+          "title": "Sad movies make me cry.",
+          "cn_title": "悲伤的电影让我哭泣。",
+          "topic": "情绪体验、人际友谊与心理调节",
+          "grammar_focus": "使役动词 make 复合宾语结构（make sb. do / make sb. + adj.）",
+          "grammar_points": [
+            "make + 宾语 + 动词原形（省略 to 的不定式）：如 Sad movies make me cry. 变为被动语态需还原 to（be made to cry）",
+            "make + 宾语 + 形容词/名词/介词短语：如 Waiting for Amy drove Tina crazy. / They made him captain.",
+            "would rather do A than do B（宁愿做 A 而不愿做 B），等效于 prefer to do A rather than do B",
+            "neither ... nor ... 连接并列主语时，谓语动词遵循“就近原则”（如 Neither medicine nor rest can help him.）"
+          ],
+          "key_vocab": [
+            "rather adv. 宁愿；相当",
+            "lately adv. 最近；不久前",
+            "friendship n. 友谊；友情",
+            "power n. 权力；力量",
+            "wealth n. 财富",
+            "examine v. （仔细地）检查；检验",
+            "uncomfortable adj. 使人不舒服的；令人不舒适的",
+            "weight n. 重量；分量",
+            "courage n. 勇敢；勇气",
+            "relief n. 轻松；解脱",
+            "agreement n. （意见或看法）一致；同意",
+            "disappoint v. 使失望"
+          ],
+          "key_patterns": [
+            "The loud music makes me nervous.",
+            "Soft and quiet music makes me relax.",
+            "Money and fame don't always make people happy."
+          ],
+          "vocab_count": 33,
+          "prereqs": [
+            "en_8b_u2",
+            "en_9_u6"
+          ]
+        },
+        {
+          "unit_id": "en_9_u12",
+          "code": "Unit 12",
+          "title": "Life is full of the unexpected.",
+          "cn_title": "生活充满了意想不到的事。",
+          "topic": "生活中的突发状况、误会与奇闻轶事",
+          "grammar_focus": "过去完成时（had + 过去分词）表示“过去的过去”",
+          "grammar_points": [
+            "过去完成时构成：had + 过去分词（否定 hadn't done，疑问将 Had 提前），表示在过去某一时间或动作之前已经发生或完成的动作",
+            "典型时间状语与从句标志：by the time + 一般过去时从句，主句常用过去完成时；by the end of + 过去时间点；before / when 引导过去动作对照",
+            "过去完成时与一般过去时对比：先发生的动作用 had done，后发生的动作用一般过去时（did）",
+            "常用结构：be full of = be filled with（充满）、be about to do sth. when ...（正要做某事突然……）、end up doing sth."
+          ],
+          "key_vocab": [
+            "unexpected adj. 出乎意料的；始料不及的",
+            "oversleep v. 睡过头；睡得太久",
+            "stare v. 盯着看；凝视",
+            "disbelief n. 不信；怀疑",
+            "burn v. 着火；燃烧",
+            "alive adj. 活着；有生气的",
+            "fool n. 蠢人；傻瓜 v. 愚弄",
+            "embarrassed adj. 窘迫的；害羞的",
+            "announce v. 宣布；宣告",
+            "hoax n. 骗局；恶作剧",
+            "cancel v. 取消；终止",
+            "disappear v. 消失；不见"
+          ],
+          "key_patterns": [
+            "By the time I got up, my brother had already gotten in the shower.",
+            "When I got to school, I realized that I had left my backpack at home.",
+            "Before I got to the bus stop, the bus had already left."
+          ],
+          "vocab_count": 31,
+          "prereqs": [
+            "en_8b_u8",
+            "en_8b_u5"
+          ]
+        },
+        {
+          "unit_id": "en_9_u13",
+          "code": "Unit 13",
+          "title": "We're trying to save the earth!",
+          "cn_title": "我们正在努力拯救地球！",
+          "topic": "环境保护、生态危机与低碳循环行动",
+          "grammar_focus": "现在进行时、used to、被动语态、现在完成时与情态动词综合复习",
+          "grammar_points": [
+            "现在进行时（am/is/are + doing）表当前阶段正在开展的行动（We're trying to save the earth!）与 used to do 表环境今昔对比",
+            "现在完成时（have/has + done）强调污染后果与持续变化，注意瞬间动词与延续性动词的转换",
+            "被动语态与情态动词在环保倡议中的综合运用（Sharks are caught... / Laws should be developed...）",
+            "高频花费动词辨析：spend (time/money) on sth. / (in) doing sth.、cost（物作主语，无被动）、take（It takes sb. time to do）、pay for"
+          ],
+          "key_vocab": [
+            "litter v. 乱扔 n. 垃圾；废弃物",
+            "advantage n. 优点；有利条件",
+            "cost v. 花费 n. 花费；价钱",
+            "plastic adj. 塑料的 n. 塑料；塑胶",
+            "cruel adj. 残酷的；残忍的",
+            "harmful adj. 有害的",
+            "industry n. 工业；行业",
+            "law n. 法律；法规",
+            "afford v. 承担得起（后果）；买得起",
+            "recycle v. 回收利用；再利用",
+            "inspiration n. 灵感；鼓舞人心的人（或事物）",
+            "creativity n. 创造力；独创性"
+          ],
+          "key_patterns": [
+            "We're trying to save the earth!",
+            "The river used to be so clean, but now it is heavily polluted.",
+            "Everyone should play a part in cleaning it up and take action right away."
+          ],
+          "vocab_count": 34,
+          "prereqs": [
+            "en_9_u4",
+            "en_9_u7",
+            "en_8b_u10"
+          ]
+        },
+        {
+          "unit_id": "en_9_u14",
+          "code": "Unit 14",
+          "title": "I remember meeting all of you in Grade 7.",
+          "cn_title": "我记得在七年级见过你们所有人。",
+          "topic": "初中三年校园回忆、感恩师友与毕业展望",
+          "grammar_focus": "初中核心时态、非谓语动词与复合句全面综合回顾",
+          "grammar_points": [
+            "remember / forget doing sth.（记得/忘记做过某事，已做）与 remember / forget to do sth.（记得/忘记去做某事，未做）对比",
+            "look forward to + 名词/动名词（盼望做某事，to 为介词），对比 used to do / be used to doing",
+            "时态系统总复习：一般现在、一般过去、一般将来、现在进行、过去进行、现在完成与过去完成时的标志词与语境切换",
+            "宾语从句、状语从句与定语从句在中考书面表达与长难句阅读中的综合衔接"
+          ],
+          "key_vocab": [
+            "method n. 方法；措施",
+            "instruction n. 指示；命令",
+            "overcome v. 克服；战胜",
+            "graduate v. 毕业；获得学位",
+            "caring adj. 体贴人的；关心他人的",
+            "senior adj. 级别（或地位）高的",
+            "degree n. （大学）学位；度数；程度",
+            "congratulate v. 祝贺",
+            "thirsty adj. 渴望的；口渴的",
+            "thankful adj. 感谢；感激",
+            "responsible adj. 有责任心的",
+            "separate adj. 单独的；分离的 v. 分开；分离"
+          ],
+          "key_patterns": [
+            "I remember meeting all of you in Grade 7.",
+            "I'm looking forward to going to senior high school.",
+            "Never fail to be thankful to the people around you."
+          ],
+          "vocab_count": 31,
+          "prereqs": [
+            "en_9_u1",
+            "en_9_u9",
+            "en_9_u12",
+            "en_9_u13"
+          ]
+        }
+      ]
+    }
+  ],
+  "grammar_clusters": [
+    {
+      "cluster_id": "gc_morphology",
+      "title": "词法与构词基础",
+      "summary": "涵盖名词单复数与所有格、人称/物主/反身/不定代词、冠词（a/an/the）、时间方位介词以及常见前缀（un-/im-/dis-）和后缀（-ful/-less/-ly/-tion/-ness）构词转换。",
+      "formula": "前缀(表否定/方向) + 词根 + 后缀(定词性); 可数名词复数/所有格('s / of); 不定代词 + 形容词(后置)",
+      "key_rules": [
+        "形容词修饰复合不定代词（something/anything/nothing 等）必须后置，如 something important",
+        "名词所有格表示共有在最后名词加 's（Tom and Jim's room），表示各自拥有分别加 's（Tom's and Jim's rooms）",
+        "常见词性转换高频后缀：v.→n. (-tion/-ment/-er), adj.→adv. (-ly), n.→adj. (-ful/-less/-y), 否定前缀 un-/in-/im-/dis-"
+      ],
+      "unit_ids": [
+        "en_7a_u1",
+        "en_7a_u2",
+        "en_7a_u3",
+        "en_7a_u4",
+        "en_7a_u6",
+        "en_7a_u8",
+        "en_7b_u8",
+        "en_7b_u10",
+        "en_8a_u1",
+        "en_8b_u1",
+        "en_9_u3",
+        "en_9_u13"
+      ]
+    },
+    {
+      "cluster_id": "gc_tenses",
+      "title": "动词八大核心时态",
+      "summary": "系统贯通初中必考八大时态：一般现在、一般过去、一般将来、过去将来、现在进行、过去进行、现在完成与过去完成时，聚焦时间标志词与瞬间动词转换。",
+      "formula": "一般现在(do/does) · 一般过去(did) · 一般将来(will/be going to do) · 过去将来(would do) · 进行(be/was/were doing) · 完成(have/has/had done)",
+      "key_rules": [
+        "现在完成时与 for + 时间段 / since + 过去时间点连用时，瞬间动词必须转为延续性动词（如 buy→have, borrow→keep, die→be dead, leave→be away）",
+        "have been to（去过已回）、have gone to（去了未回）、have been in（待在某地持续）三者语境严格区分",
+        "过去完成时（had + done）核心为“过去的过去”，常搭配 by the time / before / when 引导的过去从句"
+      ],
+      "unit_ids": [
+        "en_7a_u5",
+        "en_7b_u6",
+        "en_7b_u7",
+        "en_7b_u11",
+        "en_7b_u12",
+        "en_8a_u6",
+        "en_8a_u7",
+        "en_8b_u5",
+        "en_8b_u8",
+        "en_8b_u9",
+        "en_8b_u10",
+        "en_9_u12",
+        "en_9_u13",
+        "en_9_u14"
+      ]
+    },
+    {
+      "cluster_id": "gc_passive",
+      "title": "被动语态体系",
+      "summary": "构建一般现在时、一般过去时、一般将来时及含情态动词的被动语态完整框架，突破使役/感官动词还原 to 与主动表被动高频考点。",
+      "formula": "be (am/is/are; was/were; will be; 情态动词 + be) + 及物动词过去分词 (done) [+ by 执行者]",
+      "key_rules": [
+        "make / let / see / hear / watch 等动词主动省 to（make sb. do），变被动时必须补回 to（sb. be made to do）",
+        "take place, happen, belong to, sell well, write smoothly 等不及物或表主语属性动词不用被动语态",
+        "be made of（看出原料）、be made from（看不出原料）、be made in（产地）、be worth doing（主动表被动）常在完形与首字母填空中联考"
+      ],
+      "unit_ids": [
+        "en_9_u5",
+        "en_9_u6",
+        "en_9_u7",
+        "en_9_u10",
+        "en_9_u11",
+        "en_9_u13"
+      ]
+    },
+    {
+      "cluster_id": "gc_object_clause",
+      "title": "宾语从句",
+      "summary": "掌握 that / if / whether 与 wh- 疑问词引导的宾语从句，紧扣“引导词选型、陈述语序、主从时态呼应”三大中考核心考点。",
+      "formula": "主句 + that / if / whether / wh-词 + 从句主语 + 从句谓语 + 其他成分",
+      "key_rules": [
+        "语序铁律：宾语从句一律用陈述句语序（Could you tell me where the bank is? 不可写成 where is the bank）",
+        "时态呼应：“主现从不限，主过从必过，客观真理永用一般现在时”；注意 Could you please tell me...? 中 could 表礼貌请求，并非过去时",
+        "if 与 whether 区别：与 or not 连用、作介词宾语或后接 to do 时只能用 whether；同时注意 if 兼作“如果”（条件状语从句）与“是否”（宾语从句）的时态辨析"
+      ],
+      "unit_ids": [
+        "en_9_u2",
+        "en_9_u3",
+        "en_9_u14"
+      ]
+    },
+    {
+      "cluster_id": "gc_adverbial_clause",
+      "title": "状语从句（含主将从现）",
+      "summary": "涵盖时间（when/while/until/as soon as）、条件（if/unless）、原因（because/since）、让步（although/though/no matter）、结果（so...that/such...that）与目的（so that）六类状语从句。",
+      "formula": "主句(一般将来时/祈使句/含情态动词) + if / unless / as soon as / until / when + 从句(一般现在时表将来)",
+      "key_rules": [
+        "主将从现原则：在 if, unless, as soon as, until, when 引导的条件或时间状语从句中，用一般现在时表示将来动作",
+        "although / though 不能与 but 连用；because 不能与 so 连用（英语只保留其一）",
+        "not ... until（直到……才）与短暂性/延续性动词搭配，以及 so + adj./adv. + that 与 such + (a/an) + adj. + n. + that 区分"
+      ],
+      "unit_ids": [
+        "en_7b_u5",
+        "en_8a_u10",
+        "en_8b_u4",
+        "en_8b_u5",
+        "en_8b_u6",
+        "en_9_u5",
+        "en_9_u12"
+      ]
+    },
+    {
+      "cluster_id": "gc_attributive_clause",
+      "title": "定语从句",
+      "summary": "聚焦 that / which / who / whom / whose 引导的限制性定语从句，掌握先行词指代、关系代词充当成分省略规律及主谓一致。",
+      "formula": "先行词(人/物) + 关系代词(that / which / who / whose) + 定语从句",
+      "key_rules": [
+        "关系代词指人用 who/that（作宾语可用 whom，可省略），指物用 which/that；关系代词在从句中作主语时绝不可省略",
+        "只用 that 不用 which 的情况：先行词为不定代词（all/everything/nothing）、被序数词或最高级修饰、被 the only/the very 修饰或既有人又有物",
+        "定语从句中谓语动词的单复数与先行词保持一致（如 I like movies that have good endings.）"
+      ],
+      "unit_ids": [
+        "en_9_u9",
+        "en_9_u14"
+      ]
+    },
+    {
+      "cluster_id": "gc_non_finite",
+      "title": "非谓语动词（to do / doing）",
+      "summary": "辨析动词不定式（to do）与动名词（doing）作主语、宾语、宾语补足语和目的状语，以及常见动词固定搭配与使役动词省略 to 规则。",
+      "formula": "V + to do (want/decide/plan/hope/refuse) · V + doing (enjoy/finish/practice/mind/avoid) · make/let sb. do · by + doing",
+      "key_rules": [
+        "意义不同的双接动词：remember/forget/stop/regret/try + to do（去做未做的事）vs. + doing（做过/正在做的事）",
+        "使役与感官动词主动省 to（make/let/have/see/hear sb. do），被动还原 to；感官动词 + doing 表动作正在进行",
+        "It is + adj. + (for/of sb.) + to do sth. 与 It takes sb. some time to do sth. 中 it 作形式主语，find/think it + adj. + to do 中 it 作形式宾语"
+      ],
+      "unit_ids": [
+        "en_8a_u5",
+        "en_8b_u2",
+        "en_9_u1",
+        "en_9_u10",
+        "en_9_u11",
+        "en_9_u14"
+      ]
+    },
+    {
+      "cluster_id": "gc_modals",
+      "title": "情态动词与推测",
+      "summary": "统筹 can/could, may/might, must/have to, should/need 等情态动词的基本情态义、礼貌请求应答以及四级肯定与否定推测表达。",
+      "formula": "主语 + 情态动词(must / could / might / can't / should) + V原形 / be doing / have done",
+      "key_rules": [
+        "表推测辨析：must“一定”（仅用于肯定句），might/could/may“可能”，can't“不可能”（绝不用 mustn't 表推测，mustn't 表“禁止”）",
+        "问答呼应陷阱：Must I ...? 否定回答用 No, you needn't. / No, you don't have to.；May I ...? 否定回答用 No, you can't. / No, you mustn't.",
+        "Could you please ...? 与 Could I ...? 中 could 表委婉语气而非过去时，回答需用 can（Yes, you can. / Sure.）"
+      ],
+      "unit_ids": [
+        "en_7b_u1",
+        "en_7b_u4",
+        "en_8a_u9",
+        "en_8b_u1",
+        "en_8b_u3",
+        "en_9_u7",
+        "en_9_u8",
+        "en_9_u13"
+      ]
+    },
+    {
+      "cluster_id": "gc_comparison",
+      "title": "形容词副词比较等级",
+      "summary": "掌握形容词与副词原级、比较级、最高级的规则与不规则变化，以及同级比较、比较级叠加与最高级范围限定句型。",
+      "formula": "as + 原级 + as · 比较级 + than · the + 比较级, the + 比较级 · the + 最高级 + in/of 范围",
+      "key_rules": [
+        "修饰词分工：much / a lot / even / far / a little 修饰比较级，very / quite / so / too 修饰原级，切忌混用",
+        "常见特殊句型：the + 比较级 ..., the + 比较级 ...（越……越……）、比较级 + and + 比较级（越来越……）、one of the + 最高级 + 复数名词（最……之一）",
+        "比较范围排除自身：比较级 + than any other + 单数名词 = 最高级（比其他任何一个都……）"
+      ],
+      "unit_ids": [
+        "en_8a_u3",
+        "en_8a_u4",
+        "en_8b_u7",
+        "en_9_u1"
+      ]
+    },
+    {
+      "cluster_id": "gc_special_sentences",
+      "title": "感叹句与特殊句式",
+      "summary": "囊括 What/How 感叹句、There be 存现句（含就近原则与将来时）、祈使句与反意疑问句、倒装及并列连词主谓一致。",
+      "formula": "What + (a/an) + adj. + n. (+ S + V)! · How + adj./adv. (+ S + V)! · There be (is/are/was/were/will be) + 主语",
+      "key_rules": [
+        "感叹句判断“去主谓看中心词”：中心词为名词（单/复/不可数）用 What；中心词为形容词或副词用 How",
+        "There be 句型遵循“就近原则”，不可与 have 混用（绝不能写 There will have...，应为 There will be...）",
+        "主谓一致“就近原则”连接词：neither...nor..., either...or..., not only...but also...；“就远原则”：with / along with / together with"
+      ],
+      "unit_ids": [
+        "en_7b_u4",
+        "en_7b_u8",
+        "en_8a_u8",
+        "en_9_u2",
+        "en_9_u8",
+        "en_9_u11"
+      ]
+    }
+  ]
+}

@@ -3,22 +3,12 @@
 
 import { S, viewStatus } from './store.js';
 import { $, esc, clamp, rel, plain, subjectName } from './util.js';
+import { focusGeometry, markQuad, quadSize, quadProjector, projectPath, ellipsePoints, checkPoints, validQuad, pathOf } from './overlay-geometry.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const deg = (r) => (r * 180) / Math.PI;
 const f1 = (v) => (Math.round(v * 10) / 10).toString();
 const ptsStr = (pts) => pts.map((p) => f1(p[0]) + ',' + f1(p[1])).join(' ');
-const pathOf = (pts) => 'M' + pts.map((p) => f1(p[0]) + ' ' + f1(p[1])).join('L') + 'Z';
-
-/* 原型里的手绘圈：略不闭合、带一点抖动的椭圆 */
-function loopPath(w, h) {
-  const cx = w / 2, cy = h / 2, rx = w / 2 - 3, ry = h / 2 - 3, pts = [], n = 46, a0 = Math.PI * 1.1, turn = Math.PI * 2 * 1.13;
-  for (let i = 0; i <= n; i++) {
-    const t = i / n, a = a0 + turn * t, k = 1 - 0.06 * t;
-    pts.push(f1(cx + Math.cos(a) * rx * k + (t > 0.88 ? (t - 0.88) * 30 : 0)) + ' ' + f1(cy + Math.sin(a) * ry * (k + 0.04 * Math.sin(t * 7)) - 2 * t));
-  }
-  return 'M' + pts.join(' L');
-}
 
 function pageGeo(cap) {
   const W = cap.image_width, H = cap.image_height, pq = cap.page_quad;
@@ -31,107 +21,53 @@ function pageGeo(cap) {
   return { ang: 0, pw: W, s: clamp(W * 0.03, 22, 150), W, H, pq: null };
 }
 
-const rot = (p, a) => [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a)];
-const add = (p, q) => [p[0] + q[0], p[1] + q[1]];
-
-/** 题目在纸面方向上的外接矩形（含批改标记），用于聚光灯与镜头定帧。 */
+/** 遮罩严格沿题目quad开孔；镜头框可另含标记，不改变遮罩四边。 */
 function spotRect(q, g) {
-  const pts = [];
-  (q.quad || []).forEach((p) => pts.push(p));
-  if (!pts.length && q.bbox) {
-    const [x, y, w, h] = q.bbox;
-    pts.push([x, y], [x + w, y], [x + w, y + h], [x, y + h]);
-  }
-  if (q.mark_pos && hasMark(q)) {
-    const c = markCenter(q, g);
-    const r = g.s * 0.62;
-    pts.push(add(c, rot([-r, -r], g.ang)), add(c, rot([r, r], g.ang)), add(c, rot([r, -r], g.ang)), add(c, rot([-r, r], g.ang)));
-  }
-  if (!pts.length) return null;
-  const local = pts.map((p) => rot(p, -g.ang));
-  const m = g.s * 0.3;
-  const u0 = Math.min(...local.map((p) => p[0])) - m, u1 = Math.max(...local.map((p) => p[0])) + m;
-  const v0 = Math.min(...local.map((p) => p[1])) - m, v1 = Math.max(...local.map((p) => p[1])) + m;
-  const rect = [[u0, v0], [u1, v0], [u1, v1], [u0, v1]].map((p) => rot(p, g.ang));
-  const xs = rect.map((p) => p[0]), ys = rect.map((p) => p[1]);
-  return { pts: rect, box: { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) } };
+  return focusGeometry(q, g.s, hasMark(q));
 }
 
 function hasMark(q) {
   const v = viewStatus(q);
   return ['right', 'wrong', 'blank', 'uncertain', 'review', 'judging', 'failed'].includes(v);
 }
-/** mark_pos 视为标记左缘中点（对齐后端：标记画在 mark_pos 起向右的位置）。 */
-function markCenter(q, g) {
-  return add(q.mark_pos, rot([g.s * 0.55, 0], g.ang));
-}
-
 function markSVG(q, g, anim) {
-  const v = viewStatus(q);
-  if (!q.mark_pos || !hasMark(q)) return '';
-  const s = g.s, a = deg(g.ang);
-  const c = markCenter(q, g);
-  const tr = `translate(${f1(c[0])},${f1(c[1])}) rotate(${f1(a)})`;
-  const k = s / 64;
+  if (!hasMark(q)) return '';
+  const v = viewStatus(q), box = markQuad(q, g.s);
+  if (!box) return '';
+  const size = quadSize(box), project = quadProjector(box);
+  if (!project) return '';
+  const stroke = clamp(Math.min(size.w, size.h) * 0.075, 1.2, 12);
   if (v === 'right' || v === 'wrong') {
     const paths = v === 'right'
-      ? '<path class="mk-p" pathLength="1" d="M7 27 C12 31 16 37 21 46 C28 30 40 15 59 4"/>'
-      : '<path class="mk-p" pathLength="1" d="M12 7 C24 19 37 33 53 48"/><path class="mk-p p2" pathLength="1" d="M53 8 C40 19 27 33 11 48"/>';
-    return `<g class="mk${anim ? ' anim' : ''}" transform="${tr} scale(${f1(k * 100) / 100}) translate(-32,-27)" stroke-width="4.4">${paths}</g>`;
+      ? `<path class="mk-p" pathLength="1" d="${projectPath(box, checkPoints())}"/>`
+      : `<path class="mk-p" pathLength="1" d="${projectPath(box, [[0.18, 0.14], [0.82, 0.86]])}"/><path class="mk-p p2" pathLength="1" d="${projectPath(box, [[0.82, 0.14], [0.18, 0.86]])}"/>`;
+    return `<g class="mk${anim ? ' anim' : ''}" stroke-width="${f1(stroke)}">${paths}</g>`;
   }
   if (v === 'judging') {
-    const r = s * 0.26, circ = 2 * Math.PI * r;
-    return `<g class="jdg" transform="${tr}"><circle r="${f1(r)}" stroke="rgba(30,30,30,.16)" stroke-width="${f1(s * 0.07)}"/>` +
-      `<circle class="spin" r="${f1(r)}" stroke="rgba(30,30,30,.6)" stroke-width="${f1(s * 0.07)}" stroke-linecap="round" stroke-dasharray="${f1(circ * 0.28)} ${f1(circ)}"/></g>`;
+    const outline = projectPath(box, ellipsePoints(), true);
+    return `<g class="jdg"><path d="${outline}" fill="none" stroke="rgba(30,30,30,.16)" stroke-width="${f1(stroke)}"/>` +
+      `<path class="trace" pathLength="1" d="${outline}" fill="none" stroke="rgba(30,30,30,.6)" stroke-width="${f1(stroke)}" stroke-linecap="round" stroke-dasharray=".28 .72"/></g>`;
   }
   const label = v === 'uncertain' ? '待确认' : v === 'blank' ? '未作答' : v === 'review' ? '点评' : '待重拍';
   const cls = v === 'blank' || v === 'uncertain' ? 'blank' : v === 'review' ? 'review' : 'failed';
-  const fs = s * 0.36, w = fs * (label.length + 1.2), h = fs * 1.75;
-  // 标签左缘贴 mark_pos
-  const lc = add(q.mark_pos, rot([w / 2, 0], g.ang));
-  return `<g class="pill ${cls}${anim ? ' anim' : ''}" transform="translate(${f1(lc[0])},${f1(lc[1])}) rotate(${f1(a)})">` +
-    `<rect x="${f1(-w / 2)}" y="${f1(-h / 2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h / 2)}" stroke-width="${f1(s * 0.045)}"/>` +
-    `<text font-size="${f1(fs)}">${label}</text></g>`;
+  const center = project([0.5, 0.5]), left = project([0, 0.5]), right = project([1, 0.5]);
+  const angle = deg(Math.atan2(right[1] - left[1], right[0] - left[0]));
+  const fs = Math.min(size.h * 0.5, size.w / (label.length + 0.45));
+  const shape = projectPath(box, [[0.02, 0.12], [0.98, 0.12], [0.98, 0.88], [0.02, 0.88]], true);
+  return `<g class="pill ${cls}${anim ? ' anim' : ''}"><path class="pill-shape" d="${shape}" stroke-width="${f1(stroke * 0.65)}"/>` +
+    `<text x="${f1(center[0])}" y="${f1(center[1])}" font-size="${f1(fs)}" transform="rotate(${f1(angle)} ${f1(center[0])} ${f1(center[1])})">${label}</text></g>`;
 }
 
 function errorSVG(q, g, anim) {
-  if (viewStatus(q) !== 'wrong' || !q.error_quad || q.error_quad.length !== 4) return '';
-  const [tl, tr, br, bl] = q.error_quad;
-  const ang = Math.atan2(tr[1] - tl[1], tr[0] - tl[0]);
-  const w = (Math.hypot(tr[0] - tl[0], tr[1] - tl[1]) + Math.hypot(br[0] - bl[0], br[1] - bl[1])) / 2;
-  const h = (Math.hypot(bl[0] - tl[0], bl[1] - tl[1]) + Math.hypot(br[0] - tr[0], br[1] - tr[1])) / 2;
-  const cx = (tl[0] + tr[0] + br[0] + bl[0]) / 4, cy = (tl[1] + tr[1] + br[1] + bl[1]) / 4;
-  const W2 = w + g.s * 0.5, H2 = h + g.s * 0.36;
-  let out = `<g class="circ${anim ? ' anim' : ''}" transform="translate(${f1(cx)},${f1(cy)}) rotate(${f1(deg(ang))}) translate(${f1(-W2 / 2)},${f1(-H2 / 2)})">` +
-    `<path pathLength="1" stroke-width="${f1(g.s * 0.06)}" d="${loopPath(W2, H2)}"/></g>`;
-  // 图上批注只写短句（完整内容在右栏），避免放大后超出纸面
-  let note = plain(q.error_note || '');
-  if ([...note].length > 14) note = [...note].slice(0, 13).join('') + '…';
-  if (note) {
-    // 批注写在圈的右边；若对错标记在同一行右侧，则写在标记之后，避免压字。
-    const cL = rot([cx, cy], -g.ang);
-    let x = cL[0] + W2 / 2 + g.s * 0.25;
-    let y = cL[1];
-    if (q.mark_pos) {
-      const mL = rot(markCenter(q, g), -g.ang);
-      if (Math.abs(mL[1] - y) < g.s * 1.2 && mL[0] + g.s * 0.6 > x - g.s * 0.2) x = Math.max(x, mL[0] + g.s * 0.75);
-    }
-    // 右侧放不下（超出纸面右缘）时，改写到圈的右下方、贴纸面右缘
-    const fs = g.s * 0.62;
-    const noteW = [...note].reduce((w, ch) => w + (/[\x00-\xff]/.test(ch) ? 0.55 : 1), 0) * fs;
-    const pq = g.pq;
-    if (pq) {
-      const right = Math.min(rot(pq[1], -g.ang)[0], rot(pq[2], -g.ang)[0], ...[g.W, g.W].map((wx, i) => rot([wx, i ? g.H : 0], -g.ang)[0]));
-      if (x + noteW > right - g.s * 0.2) {
-        x = Math.max(cL[0] - W2 / 2, right - g.s * 0.3 - noteW);
-        y = cL[1] + H2 / 2 + fs * 0.55;
-      }
-    }
-    const p = rot([x, y], g.ang);
-    out += `<text class="rnote${anim ? ' anim' : ''}" font-size="${f1(fs)}" dominant-baseline="central" ` +
-      `transform="translate(${f1(p[0])},${f1(p[1])}) rotate(${f1(deg(g.ang) - 4)})">${esc(note)}</text>`;
-  }
-  return out;
+  if (viewStatus(q) !== 'wrong' || !validQuad(q.error_quad)) return '';
+  const size = quadSize(q.error_quad);
+  // Project a closed outline onto the actual answer quadrilateral; no page-wide rotation or hand-drawn drift.
+  // error_quad may be a tight ink bbox: a radius >= sqrt(0.5) encloses its corners instead of cutting strokes.
+  const outline = projectPath(q.error_quad, ellipsePoints(72, -0.22), true);
+  const stroke = clamp(Math.min(size.w, size.h) * 0.07, 1.2, 8);
+  // Detailed feedback stays in the right panel. A tooltip preserves it without covering neighboring answers.
+  const title = q.error_note ? `<title>${esc(plain(q.error_note))}</title>` : '';
+  return `<g class="circ${anim ? ' anim' : ''}">${title}<path pathLength="1" stroke-width="${f1(stroke)}" d="${outline}"/></g>`;
 }
 
 function detSVG(cap, g) {
@@ -193,16 +129,17 @@ export function createStage(app) {
         live.src = app.liveSrc;
       }
     } else {
-      // 切到定格图时断开 MJPEG 连接，释放后端名额与浏览器同源连接池。
+      // 切到定格图或离开工作台时断开 MJPEG 连接，释放后端名额与浏览器同源连接池。
       if (live.getAttribute('src')) live.setAttribute('src', '');
       live.hidden = true;
-      sheet.hidden = false;
+      sheet.hidden = !viewed();
     }
   }
 
   function render() {
     const c = viewed();
-    setLive(!c);
+    const activeWorkbench = app.isWorkbenchActive ? app.isWorkbenchActive() : true;
+    setLive(!c && activeWorkbench);
     if (c) {
       const W = c.image_width || 1920, H = c.image_height || 1080;
       sheet.style.width = W + 'px';
@@ -236,7 +173,7 @@ export function createStage(app) {
     qs.forEach((q) => S.ui.animate.delete(q.question_uid));
     gMarks.innerHTML = marks;
     gHits.innerHTML = hits;
-    // 聚光灯：选中题所在纸面方向的矩形之外压暗
+    // 聚光灯开孔与选中题quad逐点一致，禁止按整页角度重新构造矩形。
     const sel = S.d.questions[S.d.selected_question_uid];
     const r = sel && sel.capture_id === c.capture_id ? spotRect(sel, g) : null;
     if (r) {
@@ -371,6 +308,31 @@ export function createStage(app) {
   btnView.addEventListener('click', () => app.setView(viewed() ? null : S.d.active_capture_id));
   btnGrade.addEventListener('click', () => app.send({ type: 'session.grade_current' }));
   btnCapture.addEventListener('click', () => app.send({ type: 'camera.capture', grade: true }));
+  const btnUpload = $('#btnUpload'), fileInject = $('#fileInject');
+  if (btnUpload && fileInject) {
+    btnUpload.addEventListener('click', () => fileInject.click());
+    fileInject.addEventListener('change', async () => {
+      const f = fileInject.files && fileInject.files[0];
+      fileInject.value = '';
+      if (!f) return;
+      const fd = new FormData();
+      fd.append('file', f);
+      fd.append('grade', 'true');
+      btnUpload.disabled = true;
+      app.toast('正在上传并执行整页 OCR 与切题…');
+      try {
+        const r = await fetch('api/debug/inject-image', { method: 'POST', body: fd });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err.detail || '上传识别失败');
+        }
+      } catch (e) {
+        app.toast(e.message || '上传识别失败', 'alert');
+      } finally {
+        btnUpload.disabled = false;
+      }
+    });
+  }
 
   if (window.ResizeObserver) new ResizeObserver(() => reframe(true)).observe(cam);
 

@@ -8,6 +8,7 @@ import { createStage } from './stage.js';
 import { createSidebar } from './sidebar.js';
 import { createPanel } from './panel.js';
 import { createCaptureControls } from './capture-controls.js';
+import { createHomeAndGraph } from './home.js';
 
 const params = new URLSearchParams(location.search);
 S.mock = params.get('mock') === '1';
@@ -101,6 +102,21 @@ const app = {
     transport.send({ type: 'voice.ptt', active: false });
     panel.composer();
   },
+  isWorkbenchActive() {
+    return !$('#app').hidden;
+  },
+  onRouteChange(route, wbTab) {
+    if (route === 'workbench') {
+      if (wbTab && ['hw', 'mistakes', 'report'].includes(wbTab)) {
+        S.ui.nav = wbTab;
+      }
+      applyWidths();
+      renderAll();
+      setTimeout(() => stage.reframe(true), 20);
+    } else {
+      stage.render();
+    }
+  },
 };
 
 /* ---------- 语音 ---------- */
@@ -151,6 +167,7 @@ const stage = createStage(app);
 const sidebar = createSidebar(app);
 const panel = createPanel(app);
 const captureControls = createCaptureControls(app);
+const home = createHomeAndGraph(app);
 
 const renderAll = batcher(() => { sidebar.render(); stage.render(); panel.render(); captureControls.render(); });
 const renderSide = batcher(() => sidebar.render());
@@ -203,6 +220,7 @@ function handleEvent(ev) {
       if (S.ui.view && !S.d.captures[S.ui.view]) S.ui.view = null;
       if (S.d.recording?.active) S.ui.view = null;
       renderAll();
+      home.onSessionUpdated(t);
       return;
     }
     case 'camera.state':
@@ -223,6 +241,7 @@ function handleEvent(ev) {
       applyServerEvent(S.d, ev);
       S.ui.view = S.d.recording?.active ? null : ev.capture_id; // 采样期间保持实时预览
       renderAll();
+      home.onSessionUpdated(t);
       setTimeout(() => sidebar.scrollToCapture(ev.capture_id), 50);
       return;
     case 'page.matched':
@@ -247,6 +266,7 @@ function handleEvent(ev) {
         S.ui.failed.delete(ev.question_uid);
       }
       renderAll();
+      home.onSessionUpdated(t);
       return;
     case 'question.explain_delta':
       applyServerEvent(S.d, ev);
@@ -263,6 +283,7 @@ function handleEvent(ev) {
       applyServerEvent(S.d, ev);
       renderSide();
       if (!S.d.selected_question_uid) renderPanel();
+      home.onSessionUpdated(t);
       return;
     case 'timeline.event':
       applyServerEvent(S.d, ev);
@@ -435,6 +456,7 @@ function tick() {
   const now = new Date();
   $$('[data-clock]').forEach((c) => (c.textContent = hms(now)));
   $('#studyMin').textContent = Math.max(0, Math.floor((now / 1000 - (S.d.study_started_at || now / 1000)) / 60));
+  home.tick();
   if (S.cam.at && Date.now() - S.cam.at > 3000 && S.cam.stability !== 'idle') stage.status();
 }
 setInterval(tick, 1000);
@@ -443,9 +465,10 @@ setInterval(tick, 1000);
 applyWidths();
 if (NARROW.matches) goPane(store.get('aixb-pane') || 'cam');
 tick();
+home.init();
 renderAll();
 transport.connect();
 if (document.fonts?.ready) document.fonts.ready.then(() => stage.reframe(true));
 
 // 调试/验收入口
-window.__app = { S, handleEvent, transport, audio, app };
+window.__app = { S, handleEvent, transport, audio, app, home };

@@ -3,118 +3,682 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI学伴 学习看板</title>
+<title>AI学伴 · 双科学习与知识图谱看板</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="vendor/katex/katex.min.css">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/home.css">
 <script defer src="vendor/katex/katex.min.js"></script>
 <script type="module" src="js/app.js"></script>
 </head>
 <body>
-<div class="app" id="app" data-pane="cam">
-  <!-- 窄屏头部 -->
-  <header class="mhead">
-    <span class="app-name">AI学伴</span>
-    <span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span>
-    <span class="mright"><span class="tc num" data-clock></span></span>
-  </header>
+<div class="shell" id="shell" data-route="overview">
 
-  <!-- 左栏：识别出的题 -->
-  <aside class="side" aria-label="识别出来的题">
-    <div class="side-top">
-      <span class="app-name">AI学伴</span>
-      <span class="sp"></span>
+  <!-- ==================== 全局左侧导航栏（常驻） ==================== -->
+  <aside class="rail" id="rail" aria-label="主导航">
+    <div class="rail-brand">
+      <button class="brand-btn" type="button" data-route-go="overview" title="回到双科总览">
+        <span class="brand-glyph" aria-hidden="true">
+          <svg viewBox="0 0 22 22"><circle cx="7.4" cy="11" r="4.6" fill="currentColor"/><circle cx="14.6" cy="11" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </span>
+        <span class="brand-name">AI学伴</span>
+      </button>
+      <span class="rail-conn" title="台灯连接状态"><i class="kdot" data-conn-dot></i></span>
     </div>
-    <div class="kid"><span class="kav">台</span><span>学习台灯</span><span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span></div>
-    <nav class="nav" aria-label="视图">
-      <button data-view="hw" aria-current="page"><svg viewBox="0 0 20 20"><path class="ln" d="M5 3.5h7l3 3v10H5z M12 3.5v3h3 M7.5 10h5 M7.5 13h3.5"/></svg>今晚作业<span class="cnt" id="cntHw"></span></button>
-      <button data-view="mistakes"><svg viewBox="0 0 20 20"><path class="ln" d="M4 4.5h4.5a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 0-1.5-1.5H4zM16 4.5h-4.5A1.5 1.5 0 0 0 10 6v10a1.5 1.5 0 0 1 1.5-1.5H16z"/></svg>错题本<span class="cnt" id="cntMk"></span></button>
-      <button data-view="report"><svg viewBox="0 0 20 20"><path class="ln" d="M4 16V4 M4 16h12 M7.5 13v-3 M10.5 13V7 M13.5 13V9"/></svg>报告</button>
-    </nav>
-    <div class="side-body" id="sideBody"></div>
-    <div class="side-foot">
-      <span>今晚已学习 <b id="studyMin">0</b> 分钟</span>
-      <span class="proto" id="footNote"></span>
-    </div>
-  </aside>
 
-  <!-- 中栏：书桌画面 -->
-  <section class="main" aria-label="书桌画面">
-    <div class="bar">
-      <span class="live-dot" id="liveDot" aria-hidden="true"></span>
-      <span class="ttl" id="camTitle">书桌画面 <span>· LIVE</span></span>
-      <span class="rt">
-        <span class="stab" id="stab" hidden><span class="ring"></span><span id="stabT"></span></span>
-        <button class="mini" id="btnView" type="button" hidden></button>
-        <button class="mini" id="btnGrade" type="button" hidden>批改本页</button>
-        <button class="mini" id="btnCapture" type="button" title="立即抓拍并批改">抓拍</button>
-        <span class="tc num hide-md hide-sm" data-clock></span>
-      </span>
-    </div>
-    <div class="capture-tools" id="captureTools">
-      <button class="mini" id="btnAutoCapture" type="button" aria-pressed="true">自动识别：开</button>
-      <span id="autoCaptureState" role="status">等待检测状态…</span>
-      <span class="sp"></span>
-      <button class="mini" id="btnRecord" type="button" hidden>录制样本</button>
-      <button class="mini" id="btnRecordMark" type="button" hidden>标记已放稳</button>
-      <span id="recordState" role="status"></span>
-    </div>
-    <details class="recordings-panel" id="recordingsPanel" hidden>
-      <summary>临时采集 · 已录样本</summary>
-      <p>只录摄像头画面，不录音；每段最长60秒。建议从空桌开始，放下并保持静止。</p>
-      <label>场景备注 <input id="recordLabel" maxlength="100" placeholder="例如：缓慢放下、翻页、阴影"></label>
-      <button class="mini" id="btnRefreshRecordings" type="button">刷新列表</button>
-      <div id="recordingList"></div>
-    </details>
-    <div class="stage">
-      <div class="cam" id="cam" role="img" aria-label="台灯俯拍书桌画面">
-        <img class="live" id="live" alt="" decoding="async">
-        <div class="sheet" id="sheet" hidden>
-          <img id="still" alt="定格抓拍" decoding="async">
-          <svg class="ovl" id="ovl" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
-        </div>
-        <div class="vig"></div>
-        <div class="cam-badge" id="camBadge" hidden><span class="ring"></span><span id="camBadgeT"></span></div>
-        <div class="cam-msg" id="camMsg" hidden></div>
-        <div class="cap" id="cap" hidden><span class="who" id="capWho">小宇</span><span class="t" id="capT"></span></div>
+    <div class="profile-card">
+      <div class="profile-av">宇</div>
+      <div class="profile-meta">
+        <div class="profile-title"><strong id="railStudentName">小宇</strong> · <span id="railStudentGrade">九年级</span></div>
+        <div class="profile-sub">连续学习 <b class="num" id="railStreak">23</b> 天</div>
       </div>
     </div>
-  </section>
 
-  <!-- 右栏：AI 解析 -->
-  <aside class="panel" aria-label="AI解析">
-    <div class="p-head">
-      <button class="icon-btn" id="back" aria-label="返回台灯动态" disabled><svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg></button>
-      <span class="av" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="ln" cx="8" cy="8" r="3.6" style="stroke-width:1.6"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/></svg></span>
-      <span class="p-title" id="pTitle">台灯动态</span>
-      <span class="p-meta" id="pMeta">台灯 · 实时</span>
+    <div class="rail-primary">
+      <button class="overview-nav" type="button" data-route-go="overview" aria-current="page">
+        <span class="ov-ico" aria-hidden="true">
+          <svg viewBox="0 0 20 20"><path d="M3.5 9.2 10 3.8l6.5 5.4v6.6a.9.9 0 0 1-.9.9h-3.8v-4.5H8.2v4.5H4.4a.9.9 0 0 1-.9-.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="ov-txt">
+          <strong>双科总览</strong>
+          <small>数学 · 英语知识图谱</small>
+        </span>
+      </button>
     </div>
-    <div class="p-body" id="pBody"></div>
-    <div class="composer-wrap">
-      <div class="composer" id="composer">
-        <div class="c-text"><textarea class="c-in" id="ask" rows="1" placeholder="问问今晚整体的学习情况…" aria-label="向AI学伴提问" enterkeyhint="send"></textarea><div class="c-voice" id="cVoice" hidden></div></div>
-        <div class="c-row">
-          <span class="seg" role="group" aria-label="语音模式" id="vmode">
-            <button type="button" data-mode="vad" aria-pressed="false" title="免提：自动检测说话，可随时打断">免提</button>
-            <button type="button" data-mode="ptt" aria-pressed="false" title="按住麦克风说话">按住说</button>
-            <button type="button" data-mode="off" aria-pressed="false" title="关闭语音输入">关</button>
+
+    <div class="rail-sec-label">学习功能</div>
+
+    <div class="rail-cards" role="navigation" aria-label="学习功能二级入口">
+      <!-- 01 作业批改（进入完整识别与AI批改二级页面） -->
+      <button class="fn-card" type="button" data-route-go="workbench" data-wb-tab="hw">
+        <div class="fn-top">
+          <span class="fn-ico" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path class="ln" d="M5.5 3.2h6.3l3.2 3.2v10.4H5.5z M11.8 3.2v3.2H15"/><path class="ln" d="m8 11.4 1.6 1.6 3.2-3.4"/></svg>
           </span>
-          <span class="sp"></span>
-          <button class="icon-btn" type="button" id="mic" aria-label="麦克风"><svg viewBox="0 0 20 20"><rect class="ln" x="7.5" y="3" width="5" height="9" rx="2.5"/><path class="ln" d="M4.8 9.5a5.2 5.2 0 0 0 10.4 0M10 14.8V17"/></svg></button>
-          <button class="c-send" type="button" id="send" aria-label="发送"></button>
+          <span class="fn-txt">
+            <strong>作业批改</strong>
+            <small id="fnHwSub">今日作业 0/4</small>
+          </span>
+          <span class="fn-pill num" id="fnHwPill">0/4</span>
         </div>
+        <p class="fn-desc">放到台灯下自动批改 · 漏题标问号</p>
+        <div class="fn-foot">
+          <span class="fn-no num">01</span>
+          <span class="fn-bar"><i id="fnHwBar" style="width:0%"></i></span>
+          <span class="fn-stat num" id="fnHwStat">0 / 4</span>
+        </div>
+      </button>
+
+      <!-- 02 笔记检查 -->
+      <button class="fn-card" type="button" data-route-go="notes">
+        <div class="fn-top">
+          <span class="fn-ico" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><rect class="ln" x="4.5" y="3.2" width="11" height="13.6" rx="1.6"/><path class="ln" d="M7.5 7.2h5M7.5 10.2h5M7.5 13.2h3.2"/></svg>
+          </span>
+          <span class="fn-txt">
+            <strong>笔记检查</strong>
+            <small>学习习惯诊断</small>
+          </span>
+        </div>
+        <p class="fn-desc">结构 · 重点 · 错题批注 · 书写</p>
+        <div class="fn-foot">
+          <span class="fn-no num">02</span>
+          <span class="fn-bar"><i id="fnNoteBar" style="width:73%"></i></span>
+          <span class="fn-stat num" id="fnNoteStat">上次 73</span>
+        </div>
+      </button>
+
+      <!-- 03 单词背诵 -->
+      <button class="fn-card" type="button" data-route-go="vocab">
+        <div class="fn-top">
+          <span class="fn-ico" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><rect class="ln" x="3.6" y="4.2" width="12.8" height="11.6" rx="1.8"/><path class="ln" d="M7.4 12.6 9.6 7.4l2.2 5.2M8 11.2h3.2M13.5 7.5v5"/></svg>
+          </span>
+          <span class="fn-txt">
+            <strong>单词背诵</strong>
+            <small id="fnVocabSub">智能推荐 12 词</small>
+          </span>
+          <span class="fn-pill num" id="fnVocabPill">12</span>
+        </div>
+        <p class="fn-desc">智能调词量 · 卡片 · 纸笔听写</p>
+        <div class="fn-foot">
+          <span class="fn-no num">03</span>
+          <span class="fn-bar"><i style="width:45%"></i></span>
+          <span class="fn-stat num" id="fnVocabStat">推荐 12 词</span>
+        </div>
+      </button>
+
+      <!-- 04 错题复习 -->
+      <button class="fn-card" type="button" data-route-go="workbench" data-wb-tab="mistakes">
+        <div class="fn-top">
+          <span class="fn-ico" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path class="ln" d="M5.6 7.8a4.6 4.6 0 1 1 1.3 5.2M5.2 4.8v3.3h3.3"/></svg>
+          </span>
+          <span class="fn-txt">
+            <strong>错题复习</strong>
+            <small id="fnMkSub">4 题到期复习</small>
+          </span>
+          <span class="fn-pill alert num" id="fnMkPill">4</span>
+        </div>
+        <p class="fn-desc">遗忘曲线排程 · 无纸化快刷</p>
+        <div class="fn-foot">
+          <span class="fn-no num">04</span>
+          <span class="fn-bar"><i id="fnMkBar" style="width:71%"></i></span>
+          <span class="fn-stat num" id="fnMkStat">保鲜 71%</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="rail-posture">
+      <div class="posture-status">
+        <span class="posture-dot"></span>
+        <span id="railLampStatus">已在座 · 学习监督中</span>
+        <span class="kst-mini" data-conn-text>连接中</span>
       </div>
-      <p class="c-hint" id="micHint" hidden></p>
+      <div class="posture-timer">
+        <strong>在座 <span class="num" id="railSeatClock">0:04</span></strong>
+        <span>专注 <b class="num" id="studyMin">0</b> 分钟</span>
+      </div>
+      <div class="posture-tags">
+        <span class="posture-chip ok">坐姿端正 · 视距 38 cm</span>
+      </div>
+      <span class="proto" id="footNote" hidden></span>
     </div>
   </aside>
-  <div class="rsz" id="rzL" role="separator" aria-orientation="vertical" aria-label="调整左栏宽度，双击恢复默认" tabindex="0"></div>
-  <div class="rsz" id="rzR" role="separator" aria-orientation="vertical" aria-label="调整右栏宽度，双击恢复默认" tabindex="0"></div>
 
-  <nav class="tabbar" role="tablist" aria-label="切换">
-    <button role="tab" data-pane="list" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M7 5.5h9M7 10h9M7 14.5h9M4 5.5h.01M4 10h.01M4 14.5h.01" style="stroke-width:1.7"/></svg>题目</button>
-    <button role="tab" data-pane="cam" aria-selected="true"><svg viewBox="0 0 20 20"><rect class="ln" x="3" y="5" width="14" height="10.5" rx="2.5"/><circle class="ln" cx="10" cy="10.2" r="2.6"/></svg>画面</button>
-    <button role="tab" data-pane="panel" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M4 5h12M4 9h12M4 13h7.5"/></svg>解析</button>
-  </nav>
+  <!-- ==================== 右侧主视口（路由切换区） ==================== -->
+  <div class="viewport" id="viewport">
+
+    <!-- 视图 1：开屏主页 · 双科总览 -->
+    <main class="view-overview" id="viewOverview" aria-label="双科总览">
+      <header class="ov-header">
+        <div class="ov-greet">
+          <p class="ov-date" id="ovDateLine">11月6日 周四 · 九年级上学期 第 10 周</p>
+          <h1 class="ov-hello" id="ovGreeting">晚上好，小宇</h1>
+        </div>
+        <div class="ov-kpis">
+          <div class="kpi-ring-item">
+            <svg class="kpi-ring" viewBox="0 0 44 44" aria-hidden="true">
+              <circle class="kr-bg" cx="22" cy="22" r="18"/>
+              <circle class="kr-fg dark" id="kpiLitCircle" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="29.4"/>
+            </svg>
+            <div class="kpi-meta">
+              <strong class="num" id="kpiLitVal">74%</strong>
+              <span>知识图谱点亮率</span>
+            </div>
+          </div>
+          <div class="kpi-ring-item">
+            <svg class="kpi-ring" viewBox="0 0 44 44" aria-hidden="true">
+              <circle class="kr-bg" cx="22" cy="22" r="18"/>
+              <circle class="kr-fg green" id="kpiFreshCircle" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="32.8"/>
+            </svg>
+            <div class="kpi-meta">
+              <strong class="num" id="kpiFreshVal">71%</strong>
+              <span>错题记忆保鲜度</span>
+            </div>
+          </div>
+          <div class="kpi-streak">
+            <div class="ks-num"><strong class="num" id="kpiStreakVal">23</strong><span>天</span></div>
+            <div class="ks-lbl">连续学习</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="subject-stage" aria-label="学科卡片">
+        <!-- 01 初中数学卡片 -->
+        <article class="subj-card" id="cardMath" tabindex="0" role="button" aria-label="打开初中数学完整人教版知识图谱">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner br" aria-hidden="true"></span>
+
+          <header class="sc-head">
+            <span class="sc-no num">01</span>
+            <div class="sc-titles">
+              <h2>初中数学</h2>
+              <p id="mathPublisher">人教版 · 七年级上册 — 九年级下册</p>
+            </div>
+            <span class="sc-en">Mathematics</span>
+          </header>
+
+          <div class="sc-art math-art" aria-hidden="true">
+            <svg viewBox="0 0 540 370" class="art-svg">
+              <defs>
+                <pattern id="mGridMinor" width="22" height="22" patternUnits="userSpaceOnUse">
+                  <path d="M 22 0 L 0 0 0 22" fill="none" stroke="#EFEFED" stroke-width="1"/>
+                </pattern>
+                <pattern id="mGridMajor" width="88" height="88" patternUnits="userSpaceOnUse">
+                  <rect width="88" height="88" fill="url(#mGridMinor)"/>
+                  <path d="M 88 0 L 0 0 0 88" fill="none" stroke="#E4E3DF" stroke-width="1.1"/>
+                </pattern>
+                <filter id="cardFloat" x="-10%" y="-10%" width="120%" height="125%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.06"/>
+                </filter>
+              </defs>
+
+              <!-- 坐标纸底纹 -->
+              <rect x="26" y="14" width="488" height="318" fill="url(#mGridMajor)"/>
+
+              <!-- 尺规作图辅助圆弧与交点标记 -->
+              <circle cx="250" cy="182" r="76" fill="none" stroke="#D2D0CA" stroke-width="1.15"/>
+              <path d="M 232 106 A 36 36 0 0 1 268 106" fill="none" stroke="#B7B5AE" stroke-width="1.1"/>
+              <path d="M 232 258 A 36 36 0 0 0 268 258" fill="none" stroke="#B7B5AE" stroke-width="1.1"/>
+              <path d="M 242 98 L 258 114 M 258 98 L 242 114" stroke="#9C9A93" stroke-width="1.15"/>
+              <path d="M 242 250 L 258 266 M 258 250 L 242 266" stroke="#9C9A93" stroke-width="1.15"/>
+
+              <!-- 对称轴 x = 1 -->
+              <line x1="250" y1="20" x2="250" y2="324" stroke="#B5B3AC" stroke-width="1.25" stroke-dasharray="5 4"/>
+
+              <!-- 坐标轴 -->
+              <line x1="42" y1="182" x2="500" y2="182" stroke="#2C2C2A" stroke-width="1.4"/>
+              <polygon points="504,182 496,178.5 496,185.5" fill="#2C2C2A"/>
+              <line x1="206" y1="322" x2="206" y2="20" stroke="#2C2C2A" stroke-width="1.4"/>
+              <polygon points="206,16 202.5,24 209.5,24" fill="#2C2C2A"/>
+
+              <!-- 坐标轴刻度 -->
+              <g stroke="#2C2C2A" stroke-width="1.1">
+                <line x1="74" y1="178" x2="74" y2="186"/>
+                <line x1="118" y1="178" x2="118" y2="186"/>
+                <line x1="162" y1="178" x2="162" y2="186"/>
+                <line x1="250" y1="178" x2="250" y2="186"/>
+                <line x1="294" y1="178" x2="294" y2="186"/>
+                <line x1="338" y1="178" x2="338" y2="186"/>
+                <line x1="382" y1="178" x2="382" y2="186"/>
+                <line x1="426" y1="178" x2="426" y2="186"/>
+                <line x1="202" y1="94" x2="210" y2="94"/>
+                <line x1="202" y1="138" x2="210" y2="138"/>
+                <line x1="202" y1="226" x2="210" y2="226"/>
+                <line x1="202" y1="270" x2="210" y2="270"/>
+                <line x1="202" y1="314" x2="210" y2="314"/>
+              </g>
+
+              <!-- 坐标刻度数字 -->
+              <g fill="#7A7974" font-size="11" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">
+                <text x="74" y="199">−3</text>
+                <text x="118" y="199">−2</text>
+                <text x="162" y="199">−1</text>
+                <text x="195" y="198" font-style="italic">O</text>
+                <text x="250" y="199">1</text>
+                <text x="294" y="199">2</text>
+                <text x="338" y="199">3</text>
+                <text x="382" y="199">4</text>
+                <text x="426" y="199">5</text>
+                <text x="193" y="98">2</text>
+                <text x="191" y="274">−2</text>
+              </g>
+              <text x="496" y="199" fill="#1F1F1F" font-size="13" font-family="Georgia, serif" font-style="italic">x</text>
+              <text x="217" y="25" fill="#1F1F1F" font-size="13" font-family="Georgia, serif" font-style="italic">y</text>
+
+              <!-- 切线几何辅助线（过 x=3 处斜率 4） -->
+              <line x1="306" y1="298" x2="394" y2="26" stroke="#7A7974" stroke-width="1" opacity="0.65"/>
+
+              <!-- 抛物线 y = x^2 - 2x - 3 精确采样路径 (scale: 1 unit = 44px, origin=(206, 182), y_svg = 182 - 44*y? 注：为视觉舒展采用 x_unit=44px, y_unit=29px，顶点(250, 298)，零点(162,182)&(338,182)，x=-2.2->(109, 26), x=4.2->(391, 26)) -->
+              <path d="M 109 20 Q 250 576 391 20" fill="none" stroke="#181817" stroke-width="2.35" stroke-linecap="round"/>
+
+              <!-- 零点高亮圆环 x1 = -1, x2 = 3 -->
+              <circle cx="162" cy="182" r="8.5" fill="#F8E38E" opacity="0.78"/>
+              <circle cx="162" cy="182" r="4.2" fill="#FFFDF5" stroke="#1F1F1F" stroke-width="1.7"/>
+              <circle cx="338" cy="182" r="8.5" fill="#F8E38E" opacity="0.78"/>
+              <circle cx="338" cy="182" r="4.2" fill="#FFFDF5" stroke="#1F1F1F" stroke-width="1.7"/>
+
+              <!-- 顶点 (1, -4) -->
+              <circle cx="250" cy="298" r="4" fill="#FFFFFF" stroke="#1F1F1F" stroke-width="1.7"/>
+
+              <!-- 零点与顶点数学标注 -->
+              <text x="128" y="220" fill="#2C2C2A" font-size="13.5" font-family="Georgia, 'Times New Roman', serif">
+                <tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">1</tspan><tspan dy="-3"> = −1</tspan>
+              </text>
+              <text x="352" y="220" fill="#2C2C2A" font-size="13.5" font-family="Georgia, 'Times New Roman', serif">
+                <tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">2</tspan><tspan dy="-3"> = 3</tspan>
+              </text>
+              <text x="262" y="311" fill="#2C2C2A" font-size="13.5" font-family="Georgia, 'Times New Roman', serif">(1, −4)</text>
+
+              <!-- 顶部方程铭牌 -->
+              <g>
+                <rect x="174" y="32" width="152" height="48" fill="rgba(255,255,255,0.95)" stroke="#2F2F2D" stroke-width="1"/>
+                <text x="250" y="53" text-anchor="middle" fill="#181817" font-size="15.5" font-weight="600" font-family="Georgia, 'Times New Roman', serif">
+                  <tspan font-style="italic">y</tspan> = <tspan font-style="italic">x</tspan><tspan dy="-5" font-size="10.5">2</tspan><tspan dy="5"> − 2</tspan><tspan font-style="italic">x</tspan> − 3
+                </text>
+                <text x="250" y="71" text-anchor="middle" fill="#9A9992" font-size="10.8" font-family="Georgia, 'Times New Roman', serif">
+                  (<tspan font-style="italic">x</tspan> + 1)(<tspan font-style="italic">x</tspan> − 3) = 0 · Δ = 16
+                </text>
+              </g>
+
+              <!-- 底部直尺刻度装饰 -->
+              <g transform="translate(86, 342)" stroke="#B5B3AC" fill="#9E9C95" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+                <line x1="0" y1="0" x2="360" y2="0" stroke-width="1"/>
+                <path d="M0,0v9 M36,0v9 M72,0v9 M108,0v9 M144,0v9 M180,0v9 M216,0v9 M252,0v9 M288,0v9 M324,0v9 M360,0v9" stroke-width="1"/>
+                <path d="M18,0v5 M54,0v5 M90,0v5 M126,0v5 M162,0v5 M198,0v5 M234,0v5 M270,0v5 M306,0v5 M342,0v5" stroke-width="0.8"/>
+                <text x="0" y="19" text-anchor="middle" stroke="none">0</text>
+                <text x="72" y="19" text-anchor="middle" stroke="none">2</text>
+                <text x="144" y="19" text-anchor="middle" stroke="none">4</text>
+                <text x="216" y="19" text-anchor="middle" stroke="none">6</text>
+                <text x="288" y="19" text-anchor="middle" stroke="none">8</text>
+                <text x="360" y="19" text-anchor="middle" stroke="none">10</text>
+              </g>
+            </svg>
+          </div>
+
+          <footer class="sc-foot">
+            <div class="sc-now">
+              <span class="now-badge"><i></i>正在学</span>
+              <strong id="mathCurrentTitle">九年级上册 · 第二十一章 一元二次方程</strong>
+            </div>
+            <p class="sc-sub" id="mathCurrentSub">学到 21.2.3 因式分解法 · 本章掌握 74%</p>
+
+            <div class="sc-prog-row">
+              <span class="sp-lbl">知识图谱点亮</span>
+              <span class="sp-track"><i id="mathProgBar" style="width:70%"></i></span>
+              <strong class="sp-pct num" id="mathProgPct">70%</strong>
+            </div>
+
+            <div class="sc-bottom">
+              <span class="sc-count num" id="mathLitCount">64 / 92 节已点亮</span>
+              <span class="sc-cta">查看学习路线图 <span aria-hidden="true">→</span></span>
+            </div>
+          </footer>
+        </article>
+
+        <!-- 02 初中英语卡片 -->
+        <article class="subj-card" id="cardEn" tabindex="0" role="button" aria-label="打开初中英语完整人教版知识图谱">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner br" aria-hidden="true"></span>
+
+          <header class="sc-head">
+            <span class="sc-no num">02</span>
+            <div class="sc-titles">
+              <h2>初中英语</h2>
+              <p id="enPublisher">人教版 Go for it! · 七年级上册 — 九年级全一册</p>
+            </div>
+            <span class="sc-en">English</span>
+          </header>
+
+          <div class="sc-art en-art" aria-hidden="true">
+            <svg viewBox="0 0 540 370" class="art-svg">
+              <defs>
+                <filter id="lexCardShadow" x="-8%" y="-6%" width="118%" height="118%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#181814" flood-opacity="0.06"/>
+                </filter>
+              </defs>
+
+              <!-- 叠层卡片与右侧词典索引签 A F K P U Z -->
+              <rect x="48" y="14" width="424" height="328" fill="#FAF9F6" stroke="#E4E3DD" stroke-width="1"/>
+              <g font-size="9.5" font-family="Georgia, 'Times New Roman', serif" fill="#8C8A82" text-anchor="middle">
+                <rect x="478" y="46" width="22" height="26" fill="#F6F5F2" stroke="#E4E3DD"/>
+                <text x="489" y="63">A</text>
+                <rect x="478" y="96" width="22" height="26" fill="#F6F5F2" stroke="#E4E3DD"/>
+                <text x="489" y="113">F</text>
+                <rect x="478" y="146" width="22" height="26" fill="#F6F5F2" stroke="#E4E3DD"/>
+                <text x="489" y="163">K</text>
+                <rect x="478" y="196" width="22" height="26" fill="#F6F5F2" stroke="#E4E3DD"/>
+                <text x="489" y="213">P</text>
+                <rect x="478" y="246" width="22" height="26" fill="#F6DF8B" stroke="#D2B650"/>
+                <text x="489" y="263" fill="#1F1F1F" font-weight="600">U</text>
+                <rect x="478" y="296" width="22" height="26" fill="#F6F5F2" stroke="#E4E3DD"/>
+                <text x="489" y="313">Z</text>
+              </g>
+
+              <!-- 主词法与句法解析卡面 -->
+              <rect x="38" y="22" width="440" height="332" fill="#FFFFFF" stroke="#DFDED8" stroke-width="1"/>
+
+              <!-- 四线三格排版基准线：ascender / x-height / baseline / descender -->
+              <line x1="56" y1="62" x2="458" y2="62" stroke="#CFCdc6" stroke-width="1" stroke-dasharray="4 3"/>
+              <rect x="56" y="88" width="352" height="54" fill="#FBF0BE" opacity="0.72"/>
+              <line x1="56" y1="88" x2="458" y2="88" stroke="#BFBDBA" stroke-width="1"/>
+              <line x1="56" y1="142" x2="458" y2="142" stroke="#5A5955" stroke-width="1.2"/>
+              <line x1="56" y1="170" x2="458" y2="170" stroke="#CFCdc6" stroke-width="1" stroke-dasharray="4 3"/>
+
+              <!-- 字体度量标注 -->
+              <g fill="#9A9890" font-size="9.5" font-family="Georgia, 'Times New Roman', serif" text-anchor="end">
+                <text x="456" y="58">ascender</text>
+                <text x="456" y="84">x-height</text>
+                <text x="456" y="138">baseline</text>
+                <text x="456" y="166">descender</text>
+              </g>
+              <!-- x-height 尺寸线 -->
+              <line x1="396" y1="89" x2="396" y2="141" stroke="#8C8A82" stroke-width="0.9"/>
+              <polygon points="396,88 393.8,93 398.2,93" fill="#8C8A82"/>
+              <polygon points="396,142 393.8,137 398.2,137" fill="#8C8A82"/>
+              <text x="403" y="118" fill="#8C8A82" font-size="9.5" font-family="Georgia, serif" font-style="italic">.448 em</text>
+
+              <!-- 主题词 glass 衬线大字 -->
+              <text x="68" y="141" fill="#181817" font-size="92" font-family="Georgia, 'Times New Roman', Times, serif" letter-spacing="-1.5">glass</text>
+
+              <!-- 词条释义与声波纹 -->
+              <text x="68" y="189" fill="#6E6D68" font-size="11.5" font-family="Georgia, 'PingFang SC', 'Noto Sans SC', serif">
+                glass · <tspan font-style="italic">n.</tspan> 玻璃 · made of glass · 九全 Unit 5
+              </text>
+
+              <!-- 语音朗读波形条 -->
+              <g stroke="#B8B6AE" stroke-width="1.35" stroke-linecap="round" transform="translate(68, 208)">
+                <line x1="0" y1="-3" x2="0" y2="3"/><line x1="6" y1="-5" x2="6" y2="5"/><line x1="12" y1="-2" x2="12" y2="2"/>
+                <line x1="18" y1="-7" x2="18" y2="7" stroke="#5C5B57"/><line x1="24" y1="-4" x2="24" y2="4"/><line x1="30" y1="-9" x2="30" y2="9" stroke="#3E3D3A"/>
+                <line x1="36" y1="-5" x2="36" y2="5"/><line x1="42" y1="-3" x2="42" y2="3"/><line x1="48" y1="-6" x2="48" y2="6"/>
+                <line x1="54" y1="-2" x2="54" y2="2"/><line x1="60" y1="-8" x2="60" y2="8" stroke="#5C5B57"/><line x1="66" y1="-4" x2="66" y2="4"/>
+                <line x1="72" y1="-3" x2="72" y2="3"/><line x1="78" y1="-7" x2="78" y2="7"/><line x1="84" y1="-5" x2="84" y2="5"/>
+                <line x1="90" y1="-2" x2="90" y2="2"/><line x1="96" y1="-6" x2="96" y2="6"/><line x1="102" y1="-9" x2="102" y2="9" stroke="#3E3D3A"/>
+                <line x1="108" y1="-4" x2="108" y2="4"/><line x1="114" y1="-3" x2="114" y2="3"/><line x1="120" y1="-6" x2="120" y2="6"/>
+                <line x1="126" y1="-2" x2="126" y2="2"/><line x1="132" y1="-5" x2="132" y2="5"/><line x1="138" y1="-8" x2="138" y2="8" stroke="#5C5B57"/>
+                <line x1="144" y1="-3" x2="144" y2="3"/><line x1="150" y1="-4" x2="150" y2="4"/><line x1="156" y1="-7" x2="156" y2="7"/>
+                <line x1="162" y1="-3" x2="162" y2="3"/><line x1="168" y1="-5" x2="168" y2="5"/><line x1="174" y1="-2" x2="174" y2="2"/>
+                <line x1="180" y1="-6" x2="180" y2="6"/><line x1="186" y1="-8" x2="186" y2="8" stroke="#5C5B57"/><line x1="192" y1="-4" x2="192" y2="4"/>
+                <line x1="198" y1="-3" x2="198" y2="3"/><line x1="204" y1="-6" x2="204" y2="6"/><line x1="210" y1="-2" x2="210" y2="2"/>
+                <line x1="216" y1="-7" x2="216" y2="7"/><line x1="222" y1="-4" x2="222" y2="4"/><line x1="228" y1="-3" x2="228" y2="3"/>
+                <line x1="234" y1="-8" x2="234" y2="8" stroke="#5C5B57"/><line x1="240" y1="-5" x2="240" y2="5"/><line x1="246" y1="-2" x2="246" y2="2"/>
+                <line x1="252" y1="-6" x2="252" y2="6"/><line x1="258" y1="-4" x2="258" y2="4"/><line x1="264" y1="-7" x2="264" y2="7"/>
+                <line x1="270" y1="-3" x2="270" y2="3"/><line x1="276" y1="-5" x2="276" y2="5"/><line x1="282" y1="-2" x2="282" y2="2"/>
+                <line x1="288" y1="-7" x2="288" y2="7" stroke="#5C5B57"/><line x1="294" y1="-4" x2="294" y2="4"/><line x1="300" y1="-3" x2="300" y2="3"/>
+                <line x1="306" y1="-6" x2="306" y2="6"/><line x1="312" y1="-2" x2="312" y2="2"/><line x1="318" y1="-5" x2="318" y2="5"/>
+                <line x1="324" y1="-8" x2="324" y2="8"/><line x1="330" y1="-3" x2="330" y2="3"/><line x1="336" y1="-4" x2="336" y2="4"/>
+                <line x1="342" y1="-6" x2="342" y2="6"/><line x1="348" y1="-2" x2="348" y2="2"/><line x1="354" y1="-4" x2="354" y2="4"/>
+              </g>
+
+              <!-- 句法树：S · 主从复合句 -> 主将从现 -->
+              <text x="256" y="233" text-anchor="middle" fill="#454543" font-size="11" font-family="'PingFang SC', 'Noto Sans SC', sans-serif">S · 主从复合句</text>
+              <line x1="256" y1="240" x2="156" y2="282" stroke="#2C2C2A" stroke-width="1.35"/>
+              <line x1="256" y1="240" x2="356" y2="282" stroke="#2C2C2A" stroke-width="1.35"/>
+              <circle cx="256" cy="240" r="3" fill="#1F1F1F"/>
+              <circle cx="156" cy="282" r="3.2" fill="#FFFFFF" stroke="#1F1F1F" stroke-width="1.4"/>
+              <circle cx="356" cy="282" r="3.2" fill="#FFFFFF" stroke="#1F1F1F" stroke-width="1.4"/>
+
+              <text x="145" y="284" text-anchor="end" fill="#6E6D68" font-size="11">从句</text>
+              <text x="367" y="284" text-anchor="start" fill="#6E6D68" font-size="11">主句</text>
+
+              <!-- 主将从现中框与虚线关联 -->
+              <line x1="159" y1="282" x2="226" y2="274" stroke="#B5B3AC" stroke-width="1" stroke-dasharray="3 2"/>
+              <line x1="286" y1="274" x2="353" y2="282" stroke="#B5B3AC" stroke-width="1" stroke-dasharray="3 2"/>
+              <rect x="226" y="262" width="60" height="21" fill="#FFFFFF" stroke="#5A5955" stroke-width="1"/>
+              <text x="256" y="276" text-anchor="middle" fill="#1F1F1F" font-size="10.8" font-weight="600">主将从现</text>
+
+              <!-- 从句/主句投射连线 -->
+              <line x1="156" y1="285" x2="104" y2="323" stroke="#BDBBB4" stroke-width="0.9"/>
+              <line x1="156" y1="285" x2="146" y2="323" stroke="#BDBBB4" stroke-width="0.9"/>
+              <line x1="356" y1="285" x2="262" y2="323" stroke="#BDBBB4" stroke-width="0.9"/>
+              <line x1="356" y1="285" x2="312" y2="323" stroke="#BDBBB4" stroke-width="0.9"/>
+              <line x1="356" y1="285" x2="386" y2="323" stroke="#BDBBB4" stroke-width="0.9"/>
+
+              <text x="150" y="311" fill="#8E8C84" font-size="9.5">一般现在时</text>
+              <text x="294" y="311" fill="#8E8C84" font-size="9.5">一般将来时</text>
+
+              <!-- 例句高亮与双下划线 -->
+              <rect x="113" y="324" width="38" height="16" fill="#F9E596" opacity="0.85"/>
+              <text x="76" y="337" fill="#1F1F1F" font-size="15.5" font-family="Georgia, 'Times New Roman', serif">
+                If it rains tomorrow,
+              </text>
+              <text x="252" y="337" fill="#1F1F1F" font-size="15.5" font-family="Georgia, 'Times New Roman', serif">
+                we will stay at home.
+              </text>
+              <line x1="277" y1="341" x2="340" y2="341" stroke="#2C2C2A" stroke-width="1.2"/>
+              <line x1="277" y1="344" x2="340" y2="344" stroke="#2C2C2A" stroke-width="0.8"/>
+            </svg>
+          </div>
+
+          <footer class="sc-foot">
+            <div class="sc-now">
+              <span class="now-badge"><i></i>正在学</span>
+              <strong id="enCurrentTitle">九年级全一册 · Unit 5</strong>
+            </div>
+            <p class="sc-sub" id="enCurrentSub">What are the shirts made of? · 被动语态</p>
+
+            <div class="sc-prog-row">
+              <span class="sp-lbl">知识图谱点亮</span>
+              <span class="sp-track"><i id="enProgBar" style="width:80%"></i></span>
+              <strong class="sp-pct num" id="enProgPct">80%</strong>
+            </div>
+
+            <div class="sc-bottom">
+              <span class="sc-count num" id="enLitCount">45 / 58 单元 · 词汇 1,240 / 1,600</span>
+              <span class="sc-cta">查看学习路线图 <span aria-hidden="true">→</span></span>
+            </div>
+          </footer>
+        </article>
+      </section>
+
+      <!-- 底部台灯语音轻提示胶囊 -->
+      <div class="lamp-pill" id="lampPill" role="status" aria-live="polite">
+        <span class="lp-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="lp-role">台灯</span>
+        <span class="lp-text" id="lampPillText">晚上好，小宇。今晚先看数学第21章因式分解法，还是把作业放到台灯下批改？</span>
+        <button class="lp-close" id="lampPillClose" type="button" aria-label="收起提示">×</button>
+      </div>
+    </main>
+
+    <!-- 视图 2：人教版学科知识图谱二级页面（数学 / 英语共用高精交互视图） -->
+    <section class="view-graph" id="viewGraph" aria-label="学科知识图谱" hidden>
+      <header class="kg-topbar">
+        <button class="kg-back" id="kgBack" type="button">
+          <svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg>
+          <span>双科总览</span>
+        </button>
+        <div class="kg-head-main">
+          <div class="kg-subj-switch" role="tablist" aria-label="切换学科图谱">
+            <button type="button" role="tab" data-kg-subj="math" aria-selected="true">01 初中数学</button>
+            <button type="button" role="tab" data-kg-subj="en" aria-selected="false">02 初中英语</button>
+          </div>
+          <span class="kg-pub" id="kgPublisher">人教版 · 七年级上册 — 九年级下册</span>
+        </div>
+        <div class="kg-head-right">
+          <div class="kg-mode-switch" id="kgModeSwitch" role="group" aria-label="图谱视角">
+            <button type="button" data-kg-mode="map" aria-pressed="true">星轨图谱</button>
+            <button type="button" data-kg-mode="syllabus" aria-pressed="false">章节全览</button>
+          </div>
+          <div class="kg-search-box">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle class="ln" cx="9" cy="9" r="5.2"/><path class="ln" d="m13 13 3.6 3.6"/></svg>
+            <input type="search" id="kgSearch" placeholder="搜索章节、公式、语法或词汇…" aria-label="搜索知识点">
+          </div>
+        </div>
+      </header>
+
+      <!-- 今日学习定位横幅 -->
+      <div class="kg-banner" id="kgBanner"></div>
+
+      <!-- 册别筛选与图例 -->
+      <div class="kg-subbar">
+        <div class="kg-book-tabs" id="kgBookTabs" role="tablist" aria-label="按册筛选"></div>
+        <div class="kg-legend">
+          <span><i class="lg mastered"></i>已掌握</span>
+          <span><i class="lg learning"></i>今天正在学</span>
+          <span><i class="lg next"></i>即将解锁</span>
+          <span><i class="lg locked"></i>待学习</span>
+        </div>
+      </div>
+
+      <!-- 图谱主体 + 右侧知识点详情抽屉 -->
+      <div class="kg-workspace">
+        <div class="kg-canvas-wrap" id="kgCanvasWrap">
+          <div class="kg-canvas" id="kgCanvas"></div>
+        </div>
+        <aside class="kg-inspector" id="kgInspector" aria-label="知识点详情"></aside>
+      </div>
+    </section>
+
+    <!-- 视图 3：二级功能学习抽屉（笔记检查 / 单词背诵轻量二级页，保证左侧每个入口均可点可用） -->
+    <section class="view-feature" id="viewFeature" aria-label="学习工具页" hidden>
+      <header class="kg-topbar">
+        <button class="kg-back" type="button" data-route-go="overview">
+          <svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg>
+          <span>双科总览</span>
+        </button>
+        <h2 class="vf-title" id="vfTitle">单词背诵</h2>
+        <div class="kg-head-right">
+          <button class="mini on" type="button" data-route-go="workbench" data-wb-tab="hw">打开台灯实拍工作台 →</button>
+        </div>
+      </header>
+      <div class="vf-body" id="vfBody"></div>
+    </section>
+
+    <!-- 视图 4：识别与AI批改二级工作台（原三栏 WebUI 完整保留） -->
+    <div class="app" id="app" data-pane="cam" hidden>
+      <!-- 窄屏头部 -->
+      <header class="mhead">
+        <button class="icon-btn" type="button" data-route-go="overview" aria-label="返回双科总览"><svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg></button>
+        <span class="app-name">作业批改</span>
+        <span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span>
+        <span class="mright"><span class="tc num" data-clock></span></span>
+      </header>
+
+      <!-- 左栏：识别出的题 -->
+      <aside class="side" aria-label="识别出来的题">
+        <div class="side-top">
+          <button class="wb-back-btn" type="button" data-route-go="overview" title="返回双科总览">
+            <svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg>
+            <span>返回总览</span>
+          </button>
+          <span class="sp"></span>
+          <span class="wb-badge">台灯识别</span>
+        </div>
+        <div class="kid"><span class="kav">台</span><span>学习台灯</span><span class="kdot" data-conn-dot></span><span class="kst" data-conn-text>连接中</span></div>
+        <nav class="nav" aria-label="视图">
+          <button data-view="hw" aria-current="page"><svg viewBox="0 0 20 20"><path class="ln" d="M5 3.5h7l3 3v10H5z M12 3.5v3h3 M7.5 10h5 M7.5 13h3.5"/></svg>今晚作业<span class="cnt" id="cntHw"></span></button>
+          <button data-view="mistakes"><svg viewBox="0 0 20 20"><path class="ln" d="M4 4.5h4.5a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 0-1.5-1.5H4zM16 4.5h-4.5A1.5 1.5 0 0 0 10 6v10a1.5 1.5 0 0 1 1.5-1.5H16z"/></svg>错题本<span class="cnt" id="cntMk"></span></button>
+          <button data-view="report"><svg viewBox="0 0 20 20"><path class="ln" d="M4 16V4 M4 16h12 M7.5 13v-3 M10.5 13V7 M13.5 13V9"/></svg>报告</button>
+        </nav>
+        <div class="side-body" id="sideBody"></div>
+        <div class="side-foot">
+          <span>今晚已批改 · 实时联动双科知识图谱</span>
+        </div>
+      </aside>
+
+      <!-- 中栏：书桌画面 -->
+      <section class="main" aria-label="书桌画面">
+        <div class="bar">
+          <span class="live-dot" id="liveDot" aria-hidden="true"></span>
+          <span class="ttl" id="camTitle">书桌画面 <span>· LIVE</span></span>
+          <span class="rt">
+            <span class="stab" id="stab" hidden><span class="ring"></span><span id="stabT"></span></span>
+            <button class="mini" id="btnView" type="button" hidden></button>
+            <button class="mini" id="btnGrade" type="button" hidden>批改本页</button>
+            <input type="file" id="fileInject" accept="image/jpeg,image/png,image/webp" hidden>
+            <button class="mini" id="btnUpload" type="button" title="上传任意试卷照片（含未预设模板）">上传卷子</button>
+            <button class="mini" id="btnCapture" type="button" title="立即抓拍并批改">抓拍</button>
+            <span class="tc num hide-md hide-sm" data-clock></span>
+          </span>
+        </div>
+        <div class="capture-tools" id="captureTools">
+          <button class="mini" id="btnAutoCapture" type="button" aria-pressed="true">自动识别：开</button>
+          <span id="autoCaptureState" role="status">等待检测状态…</span>
+          <span class="sp"></span>
+          <button class="mini" id="btnRecord" type="button" hidden>录制样本</button>
+          <button class="mini" id="btnRecordMark" type="button" hidden>标记已放稳</button>
+          <span id="recordState" role="status"></span>
+        </div>
+        <details class="recordings-panel" id="recordingsPanel" hidden>
+          <summary>临时采集 · 已录样本</summary>
+          <p>只录摄像头画面，不录音；每段最长60秒。建议从空桌开始，放下并保持静止。</p>
+          <label>场景备注 <input id="recordLabel" maxlength="100" placeholder="例如：缓慢放下、翻页、阴影"></label>
+          <button class="mini" id="btnRefreshRecordings" type="button">刷新列表</button>
+          <div id="recordingList"></div>
+        </details>
+        <div class="stage">
+          <div class="cam" id="cam" role="img" aria-label="台灯俯拍书桌画面">
+            <img class="live" id="live" alt="" decoding="async">
+            <div class="sheet" id="sheet" hidden>
+              <img id="still" alt="定格抓拍" decoding="async">
+              <svg class="ovl" id="ovl" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="vig"></div>
+            <div class="cam-badge" id="camBadge" hidden><span class="ring"></span><span id="camBadgeT"></span></div>
+            <div class="cam-msg" id="camMsg" hidden></div>
+            <div class="cap" id="cap" hidden><span class="who" id="capWho">小宇</span><span class="t" id="capT"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右栏：AI 解析 -->
+      <aside class="panel" aria-label="AI解析">
+        <div class="p-head">
+          <button class="icon-btn" id="back" aria-label="返回台灯动态" disabled><svg viewBox="0 0 20 20"><path class="ln" d="M15.5 10h-11M9 5.5 4.5 10 9 14.5"/></svg></button>
+          <span class="av" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="ln" cx="8" cy="8" r="3.6" style="stroke-width:1.6"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/></svg></span>
+          <span class="p-title" id="pTitle">台灯动态</span>
+          <span class="p-meta" id="pMeta">台灯 · 实时</span>
+        </div>
+        <div class="p-body" id="pBody"></div>
+        <div class="composer-wrap">
+          <div class="composer" id="composer">
+            <div class="c-text"><textarea class="c-in" id="ask" rows="1" placeholder="问问今晚整体的学习情况…" aria-label="向AI学伴提问" enterkeyhint="send"></textarea><div class="c-voice" id="cVoice" hidden></div></div>
+            <div class="c-row">
+              <span class="seg" role="group" aria-label="语音模式" id="vmode">
+                <button type="button" data-mode="vad" aria-pressed="false" title="免提：自动检测说话，可随时打断">免提</button>
+                <button type="button" data-mode="ptt" aria-pressed="false" title="按住麦克风说话">按住说</button>
+                <button type="button" data-mode="off" aria-pressed="false" title="关闭语音输入">关</button>
+              </span>
+              <span class="sp"></span>
+              <button class="icon-btn" type="button" id="mic" aria-label="麦克风"><svg viewBox="0 0 20 20"><rect class="ln" x="7.5" y="3" width="5" height="9" rx="2.5"/><path class="ln" d="M4.8 9.5a5.2 5.2 0 0 0 10.4 0M10 14.8V17"/></svg></button>
+              <button class="c-send" type="button" id="send" aria-label="发送"></button>
+            </div>
+          </div>
+          <p class="c-hint" id="micHint" hidden></p>
+        </div>
+      </aside>
+      <div class="rsz" id="rzL" role="separator" aria-orientation="vertical" aria-label="调整左栏宽度，双击恢复默认" tabindex="0"></div>
+      <div class="rsz" id="rzR" role="separator" aria-orientation="vertical" aria-label="调整右栏宽度，双击恢复默认" tabindex="0"></div>
+
+      <nav class="tabbar" role="tablist" aria-label="切换">
+        <button role="tab" data-pane="list" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M7 5.5h9M7 10h9M7 14.5h9M4 5.5h.01M4 10h.01M4 14.5h.01" style="stroke-width:1.7"/></svg>题目</button>
+        <button role="tab" data-pane="cam" aria-selected="true"><svg viewBox="0 0 20 20"><rect class="ln" x="3" y="5" width="14" height="10.5" rx="2.5"/><circle class="ln" cx="10" cy="10.2" r="2.6"/></svg>画面</button>
+        <button role="tab" data-pane="panel" aria-selected="false"><svg viewBox="0 0 20 20"><path class="ln" d="M4 5h12M4 9h12M4 13h7.5"/></svg>解析</button>
+      </nav>
+    </div>
+
+  </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden><i></i><span id="toastT"></span></div>
 </body>

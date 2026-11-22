@@ -37,7 +37,8 @@ export function createSidebar(app) {
     if (!caps.length) return '<p class="empty">还没有作业。把作业纸平放到台灯下、保持静止，台灯会自动抓拍并逐题识别。</p>';
     return caps.map((c) => {
       const qs = (c.question_uids || []).map((u) => S.d.questions[u]).filter(Boolean);
-      const title = c.paper_id ? `${subjectName(c.subject)} · 第${c.page_no}页` : (S.ui.unmatched.has(c.capture_id) ? '未匹配的页面' : '识别中…');
+      const modeBadge = c.mode === 'freeform' ? ' · 自由OCR' : '';
+      const title = c.paper_id ? `${subjectName(c.subject)} · 第${c.page_no}页${modeBadge}` : (S.ui.unmatched.has(c.capture_id) ? '未识别到题目' : '整页OCR识别中…');
       const full = c.paper_title ? `${c.paper_title} · 第${c.page_no}页 · ${c.ts || ''}` : (c.ts || '');
       const st = captureStats(c);
       return `<div class="grp${S.ui.view === c.capture_id ? ' viewing' : ''}" data-cap="${esc(c.capture_id)}">` +

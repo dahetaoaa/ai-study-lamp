@@ -153,7 +153,8 @@ button.grp-h:hover{color:var(--fg2)}
 .sheet{position:absolute; left:0; top:0; transform-origin:0 0; transition:transform .6s cubic-bezier(.25,.7,.2,1); will-change:transform}
 .sheet.nt, .sheet.nt *{transition:none !important}
 .sheet > img, .sheet > svg{position:absolute; left:0; top:0; width:100%; height:100%; display:block}
-.sheet > svg{overflow:visible}
+.sheet > svg{overflow:hidden}
+.sheet > img{object-fit:fill}
 .vig{position:absolute; inset:0; pointer-events:none; z-index:40; background:radial-gradient(ellipse 80% 76% at 50% 45%, rgba(0,0,0,0) 60%, rgba(14,8,2,.36) 100%)}
 .cam-msg{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:45; color:rgba(255,255,255,.86); background:rgba(16,16,16,.55); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border-radius:12px; padding:12px 20px; font-size:.95rem; text-align:center; max-width:80%}
 .cam-badge{position:absolute; left:16px; top:14px; z-index:46; display:flex; align-items:center; gap:8px; color:#fff; background:rgba(16,16,16,.5); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border-radius:999px; padding:4px 12px 4px 10px; font-size:.8rem}
@@ -170,7 +171,7 @@ button.grp-h:hover{color:var(--fg2)}
 .ovl .qhl{fill:none; stroke:rgba(255,255,255,.85); opacity:0; transition:opacity .3s; pointer-events:none}
 .ovl .qhl.on{opacity:1}
 .ovl .hit{fill:transparent; stroke:none; cursor:pointer; pointer-events:all}
-.ovl .hit:hover{fill:rgba(255,255,255,.07)}
+.ovl .hit:hover{fill:transparent; stroke:none}
 .ovl .mk path, .ovl .circ path{fill:none; stroke:var(--ink-red); stroke-linecap:round; stroke-linejoin:round; opacity:.92; pointer-events:none}
 .ovl .anim .mk-p{stroke-dasharray:1 1; stroke-dashoffset:1; animation:draw .3s ease-out forwards}
 .ovl .anim .mk-p.p2{animation-delay:.18s}
@@ -178,14 +179,14 @@ button.grp-h:hover{color:var(--fg2)}
 @keyframes draw{to{stroke-dashoffset:0}}
 .ovl .rnote{fill:var(--ink-red); font-family:var(--hand-zh); opacity:.95; pointer-events:none}
 .ovl .rnote.anim{opacity:0; animation:fade .3s .8s ease-out forwards}
-.ovl .pill rect{fill:rgba(255,255,255,.72)}
+.ovl .pill .pill-shape{fill:rgba(255,255,255,.72)}
 .ovl .pill text{font-family:var(--font); font-weight:600; dominant-baseline:central; text-anchor:middle}
-.ovl .pill.blank rect{stroke:#8C8C88} .ovl .pill.blank text{fill:#77776F}
-.ovl .pill.review rect{stroke:#3E5C86} .ovl .pill.review text{fill:#3E5C86}
-.ovl .pill.failed rect{stroke:#C8352B; stroke-dasharray:6 4} .ovl .pill.failed text{fill:#C8352B}
+.ovl .pill.blank .pill-shape{stroke:#8C8C88} .ovl .pill.blank text{fill:#77776F}
+.ovl .pill.review .pill-shape{stroke:#3E5C86} .ovl .pill.review text{fill:#3E5C86}
+.ovl .pill.failed .pill-shape{stroke:#C8352B; stroke-dasharray:6 4} .ovl .pill.failed text{fill:#C8352B}
 .ovl .pill.anim{animation:fade .35s ease-out}
-.ovl .jdg circle{fill:none}
-.ovl .jdg .spin{animation:spin .8s linear infinite; transform-box:fill-box; transform-origin:center}
+.ovl .jdg .trace{animation:trace 1s linear infinite}
+@keyframes trace{to{stroke-dashoffset:-1}}
 .ovl .det{opacity:0; animation:det 1.8s ease-out forwards; pointer-events:none}
 .ovl .det path{fill:none; stroke:rgba(255,255,255,.95); stroke-linecap:square}
 .ovl .det text{fill:#1F1F1F; font-family:var(--font); font-weight:600}
